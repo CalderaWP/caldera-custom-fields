@@ -1,0 +1,52 @@
+.postbox-container .control-label {
+  display: block;
+  margin: 8px 0 12px;
+  font-weight: bold;
+}
+.postbox-container .help-block {
+  font-size: 13px;
+  font-style: italic;	
+  color: #A5A5A5;
+  margin: 2px 0 5px;
+}
+.caldera-grid ol.breadcrumb {
+  background: none repeat scroll 0 0 #f4f4f4;
+  list-style: none outside none;
+  margin: -18px -12px 6px;
+  padding: 0;
+}
+.caldera-grid .breadcrumb > li {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+}
+.caldera-grid .breadcrumb > li > a {
+  display: block;
+  padding: 8px 12px;
+}
+.caldera-grid .breadcrumb > li:hover {
+	background: #efefef;
+}
+.caldera-grid .breadcrumb > li.active {
+	background: #fff;
+}
+.caldera-grid .caldera_forms_form {
+  padding: 12px 0;
+}
+
+/* ----- side --------- */
+#side-sortables .caldera-grid ol.breadcrumb {
+  background: none repeat scroll 0 0 #f4f4f4;
+  float: none;
+  list-style: none outside none;
+  margin: -14px -12px 6px;
+  padding: 0;
+  width: auto;
+}
+#side-sortables .caldera-grid .caldera_forms_form {
+  margin: 0;
+  padding: 8px 0;
+}
+#side-sortables .inside > div.caldera-grid {
+  box-shadow: none;
+}
