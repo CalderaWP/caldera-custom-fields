@@ -53,8 +53,8 @@ function cf_custom_fields_register_metabox_processor($processors){
 		"description"		=>	__("Convert a form into a Custom Fields Manager", 'caldera-forms-metabox'),
 		"single"			=>	true,
 		"processor"			=>	'cf_custom_fields_save_meta_data',
-		"template"			=>	plugin_dir_path(__FILE__) . "config.php",
-		"icon"				=>	plugin_dir_url(__FILE__) . "metabox.png",
+		"template"			=>	CCF_PATH . "/includes/config.php",
+		"icon"				=>	CCF_URL . "/metabox.png",
 		"conditionals"		=>	false,
 	);
 	return $processors;
