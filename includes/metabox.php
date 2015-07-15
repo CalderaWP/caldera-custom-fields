@@ -49,8 +49,8 @@ function cf_custom_fields_metabox_save_form($form){
 
 function cf_custom_fields_register_metabox_processor($processors){
 	$processors['cf_asmetabox'] = array(
-		"name"				=>	__('Caldera Custom Fields', 'caldera-forms-metabox'),
-		"description"		=>	__("Convert a form into a Custom Fields Manager", 'caldera-forms-metabox'),
+		"name"				=>	__('Caldera Custom Fields', 'caldera-custom-fields'),
+		"description"		=>	__("Convert a form into a Custom Fields Manager", 'caldera-custom-fields'),
 		"single"			=>	true,
 		"processor"			=>	'cf_custom_fields_save_meta_data',
 		"template"			=>	CCF_PATH . "/includes/config.php",
