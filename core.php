@@ -12,22 +12,22 @@
 
 
 // add actions
-add_action( 'add_meta_boxes', 'cf_form_as_metabox' );
-add_action( 'save_post', 'cf_form_as_metabox_save_post' );
+add_action( 'add_meta_boxes', 'cf_custom_fields_form_as_metabox' );
+add_action( 'save_post', 'cf_custom_fields_save_post' );
 
 // add filters
-add_filter('caldera_forms_get_form_processors', 'register_metabox_processor');
+add_filter('caldera_forms_get_form_processors', 'cf_custom_fields_register_metabox_processor');
 
 // admin filters & actions
 if( is_admin() ){
 	// disable redirect
-	add_filter('caldera_forms_redirect_url', 'cf_form_as_metabox_prevent_redirect', 1, 4);
+	add_filter('caldera_forms_redirect_url', 'cf_custom_fields_prevent_redirect', 1, 4);
 	// save action to disable mailer
-	add_action('caldera_forms_save_form_register', 'cf_form_as_metabox_save_form');
+	add_action('caldera_forms_save_form_register', 'cf_custom_fields_metabox_save_form');
 
 }
 
-function cf_form_as_metabox_save_form($form){
+function cf_custom_fields_metabox_save_form($form){
 	if(!empty($form['is_metabox'])){
 		
 		// disable DB support
@@ -52,12 +52,12 @@ function cf_form_as_metabox_save_form($form){
 	}
 }
 
-function register_metabox_processor($processors){
+function cf_custom_fields_register_metabox_processor($processors){
 	$processors['cf_asmetabox'] = array(
 		"name"				=>	__('Caldera Custom Fields', 'caldera-forms-metabox'),
 		"description"		=>	__("Convert a form into a Custom Fields Manager", 'caldera-forms-metabox'),
 		"single"			=>	true,
-		"processor"			=>	'cf_form_as_metabox_save_meta_data',
+		"processor"			=>	'cf_custom_fields_save_meta_data',
 		"template"			=>	plugin_dir_path(__FILE__) . "config.php",
 		"icon"				=>	plugin_dir_url(__FILE__) . "metabox.png",
 		"conditionals"		=>	false,
@@ -66,7 +66,7 @@ function register_metabox_processor($processors){
 
 }
 
-function cf_form_as_metabox_prevent_redirect($url, $data, $form){
+function cf_custom_fields_prevent_redirect($url, $data, $form){
 	if(!empty($form['is_metabox'])){
 		global $post;
 		return false;
@@ -74,7 +74,7 @@ function cf_form_as_metabox_prevent_redirect($url, $data, $form){
 	return $url;
 }
 
-function cf_form_as_metabox_save_meta_data($config, $form){
+function cf_custom_fields_save_meta_data($config, $form){
 	global $post;
 	if(!is_admin()){
 		return;
@@ -107,7 +107,7 @@ function cf_form_as_metabox_save_meta_data($config, $form){
 }
 
 
-function cf_form_as_metabox() {
+function cf_custom_fields_form_as_metabox() {
 	$forms = get_option( '_caldera_forms' );
 	if(empty($forms)){
 		return;
@@ -120,16 +120,16 @@ function cf_form_as_metabox() {
 			if(!empty($form['processors'][$form['is_metabox']]['config']['posttypes'])){
 				
 				// add filter to get details of entry
-				add_filter('caldera_forms_get_entry_detail', 'cf_form_as_metabox_get_post_details', 10, 3);
+				add_filter('caldera_forms_get_entry_detail', 'cf_custom_fields_get_post_details', 10, 3);
 
 				// add filter to remove submit buttons
-				add_filter('caldera_forms_render_setup_field', 'cf_form_as_metabox_submit_button_removal');
+				add_filter('caldera_forms_render_setup_field', 'cf_custom_fields_submit_button_removal');
 
 				foreach( $form['processors'][$form['is_metabox']]['config']['posttypes'] as $screen=>$enabled){
 					add_meta_box(
 						$form['ID'],
 						$form['name'],
-						'cf_form_as_metabox_render',
+						'cf_custom_fields_render',
 						$screen,
 						$form['processors'][$form['is_metabox']]['config']['context'],
 						$form['processors'][$form['is_metabox']]['config']['priority']
@@ -183,7 +183,7 @@ function cf_form_as_metabox() {
 
 }
 
-function cf_form_as_metabox_get_meta_data($data, $form){
+function cf_custom_fields_get_meta_data($data, $form){
 	global $post;
 	$entry = array();
 	foreach($form['fields'] as $fieldslug=>$field){		
@@ -194,7 +194,7 @@ function cf_form_as_metabox_get_meta_data($data, $form){
 
 
 
-function cf_form_as_metabox_save_post(){
+function cf_custom_fields_save_post(){
 
 	if(is_admin()){
 		if(isset($_POST['cf_metabox_forms'])){
@@ -202,7 +202,7 @@ function cf_form_as_metabox_save_post(){
 			foreach( $_POST['cf_metabox_forms'] as $metaForm ){
 				// add filter to get details of entry
 				$_POST['_cf_frm_id'] = $metaForm;
-				add_filter('caldera_forms_get_entry_detail', 'cf_form_as_metabox_get_post_details', 10, 3);
+				add_filter('caldera_forms_get_entry_detail', 'cf_custom_fields_get_post_details', 10, 3);
 				Caldera_Forms::process_submission();
 
 			}
@@ -211,11 +211,11 @@ function cf_form_as_metabox_save_post(){
 }
 
 
-function cf_form_as_metabox_render($post, $args){
+function cf_custom_fields_render($post, $args){
 	if(isset($_GET['cf_su'])){
 		unset($_GET['cf_su']);
 	}
-	add_filter('caldera_forms_render_get_entry', 'cf_form_as_metabox_get_meta_data', 10, 2);
+	add_filter('caldera_forms_render_get_entry', 'cf_custom_fields_get_meta_data', 10, 2);
 
 	ob_start();
 	echo Caldera_Forms::render_form($args['id'], 259);
@@ -229,7 +229,7 @@ function cf_form_as_metabox_render($post, $args){
 
 }
 
-function cf_form_as_metabox_get_post_details($details, $entry, $form){
+function cf_custom_fields_get_post_details($details, $entry, $form){
 	global $post;
 	
     return array(
@@ -240,7 +240,7 @@ function cf_form_as_metabox_get_post_details($details, $entry, $form){
     );
 }
 
-function cf_form_as_metabox_submit_button_removal($field){
+function cf_custom_fields_submit_button_removal($field){
 	if($field['type'] === 'button'){
 		$field['config']['class'] .= ' button';
 		if( $field['config']['type'] === 'submit' ){
