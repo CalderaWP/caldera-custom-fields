@@ -24,20 +24,38 @@ if( is_admin() ){
 
 }
 
+/**
+ * Add the processor.
+ *
+ * @uses "caldera_forms_get_form_processors"
+ *
+ * @param $processors
+ *
+ * @return mixed
+ */
 function cf_custom_fields_register_metabox_processor($processors){
 	$processors['cf_asmetabox'] = array(
 		"name"				=>	__( 'Custom Fields: Post Metabox', 'caldera-custom-fields' ),
 		"description"		=>	__( 'Use a form as a custom metabox in the post editor.', 'caldera-custom-fields' ),
 		"single"			=>	true,
 		"processor"			=>	'cf_custom_fields_save_meta_data',
-		"template"			=>	CCF_PATH . "/includes/config.php",
-		"icon"				=>	CCF_URL . "/metabox.png",
+		"template"			=>	CCF_PATH . "/includes/metabox-config.php",
+		"icon"				=>	CCF_URL . "/metabox-icon.png",
 		"conditionals"		=>	false,
 	);
 	return $processors;
 
 }
 
+/**
+ * Disable mailer/ form AJAX/ DB support for metabox forms.
+ *
+ * @since 1.?.?
+ *
+ * @uses "caldera_forms_save_form_register" action
+ *
+ * @param $form
+ */
 function cf_custom_fields_metabox_save_form($form){
 	if(!empty($form['is_metabox'])){
 
@@ -61,18 +79,40 @@ function cf_custom_fields_metabox_save_form($form){
 		$forms[$form['ID']]['mailer']['enable_mailer'] = 0;
 		update_option( '_caldera_forms', $forms );
 	}
+
 }
 
 
-
+/**
+ * Prevent redirect.
+ *
+ * @since 1.?.?
+ *
+ * @uses "caldera_forms_redirect_url" filter;
+ *
+ * @param string $url Redirect URL
+ * @param array $data Submission data.
+ * @param array $form Form config.
+ *
+ * @return bool
+ */
 function cf_custom_fields_prevent_redirect($url, $data, $form){
-	if(!empty($form['is_metabox'])){
+	if( !empty($form['is_metabox'])){
 		global $post;
 		return false;
 	}
+
 	return $url;
 }
 
+/**
+ * Save meta data from form.
+ *
+ * @since 1.?.?
+ *
+ * @param array $config Processor config.
+ * @param array $form Form config.
+ */
 function cf_custom_fields_save_meta_data($config, $form){
 	global $post;
 	if(!is_admin()){
@@ -106,6 +146,13 @@ function cf_custom_fields_save_meta_data($config, $form){
 }
 
 
+/**
+ * Setup form in the admin
+ *
+ * @uses "add_meta_boxes" action
+ *
+ * @since 1.?.?
+ */
 function cf_custom_fields_form_as_metabox() {
 	$forms = get_option( '_caldera_forms' );
 	if(empty($forms)){
@@ -182,17 +229,35 @@ function cf_custom_fields_form_as_metabox() {
 
 }
 
+/**
+ * Save form meta data.
+ *
+ * @since 1.?.?
+ *
+ * @uses "caldera_forms_render_get_entry" filter
+ *
+ * @param $data
+ * @param $form
+ *
+ * @return array
+ */
 function cf_custom_fields_get_meta_data($data, $form){
 	global $post;
 	$entry = array();
-	foreach($form['fields'] as $fieldslug=>$field){
-		$entry[$fieldslug] = get_post_meta($post->ID, $field['slug'], true);
+	foreach($form['fields'] as $fieldslug => $field ){
+		$entry[$fieldslug] = get_post_meta( $post->ID, $field['slug'], true );
 	}
 	return $entry;
 }
 
 
-
+/**
+ * Process data on post save.
+ *
+ * @since 1.?.?
+ *
+ * @uses "save_post" action
+ */
 function cf_custom_fields_save_post(){
 
 	if(is_admin()){
@@ -210,6 +275,14 @@ function cf_custom_fields_save_post(){
 }
 
 
+/**
+ * Render fields in editor.
+ *
+ * @since 1.?.?
+ *
+ * @param object $post Post object.
+ * @param array $args Args
+ */
 function cf_custom_fields_render($post, $args){
 	if(isset($_GET['cf_su'])){
 		unset($_GET['cf_su']);
@@ -228,6 +301,20 @@ function cf_custom_fields_render($post, $args){
 
 }
 
+
+/**
+ * Get details from entry.
+ *
+ * @since 1.?.?
+ *
+ * @uses "caldera_forms_get_entry_detail" fitler
+ *
+ * @param $details
+ * @param $entry
+ * @param $form
+ *
+ * @return array
+ */
 function cf_custom_fields_get_post_details($details, $entry, $form){
 	global $post;
 
@@ -239,6 +326,15 @@ function cf_custom_fields_get_post_details($details, $entry, $form){
 	);
 }
 
+/**
+ * Remove submit button.
+ *
+ * @since 1.?.?
+ *
+ * @param $field
+ *
+ * @return bool
+ */
 function cf_custom_fields_submit_button_removal($field){
 	if($field['type'] === 'button'){
 		$field['config']['class'] .= ' button';
@@ -247,6 +343,7 @@ function cf_custom_fields_submit_button_removal($field){
 		}
 	}
 	return $field;
+	
 }
 
 
