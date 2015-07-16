@@ -20,6 +20,22 @@ if( is_admin() ){
 	// save action to disable mailer
 	add_action('caldera_forms_save_form_register', 'cf_custom_fields_metabox_save_form');
 
+
+
+}
+
+function cf_custom_fields_register_metabox_processor($processors){
+	$processors['cf_asmetabox'] = array(
+		"name"				=>	__( 'Custom Fields: Post Metabox', 'caldera-custom-fields' ),
+		"description"		=>	__( 'Use a form as a custom metabox in the post editor.', 'caldera-custom-fields' ),
+		"single"			=>	true,
+		"processor"			=>	'cf_custom_fields_save_meta_data',
+		"template"			=>	CCF_PATH . "/includes/config.php",
+		"icon"				=>	CCF_URL . "/metabox.png",
+		"conditionals"		=>	false,
+	);
+	return $processors;
+
 }
 
 function cf_custom_fields_metabox_save_form($form){
@@ -47,19 +63,7 @@ function cf_custom_fields_metabox_save_form($form){
 	}
 }
 
-function cf_custom_fields_register_metabox_processor($processors){
-	$processors['cf_asmetabox'] = array(
-		"name"				=>	__('Caldera Custom Fields', 'caldera-custom-fields'),
-		"description"		=>	__("Convert a form into a Custom Fields Manager", 'caldera-custom-fields'),
-		"single"			=>	true,
-		"processor"			=>	'cf_custom_fields_save_meta_data',
-		"template"			=>	CCF_PATH . "/includes/config.php",
-		"icon"				=>	CCF_URL . "/metabox.png",
-		"conditionals"		=>	false,
-	);
-	return $processors;
 
-}
 
 function cf_custom_fields_prevent_redirect($url, $data, $form){
 	if(!empty($form['is_metabox'])){

@@ -15,6 +15,35 @@ add_action( 'wp_ajax_cf_custom_fields_taxonomies', 'cf_custom_fields_taxonomies'
 add_filter( 'caldera_forms_get_addons', 'cf_custom_fields_savetoposttype_addon' );
 
 /**
+ * Register this as a processor.
+ *
+ * @uses "caldera_forms_get_form_processors" filter
+ *
+ * @param $processors
+ *
+ * @return mixed
+ */
+function cf_custom_fields_posttype_process($processors){
+
+	$processors['post_type'] = array(
+		"name"				=>	__( 'Custom Fields: Save as Post Type', 'caldera-custom-fields' ),
+		"description"		=>	__( 'Store form entries as a post with custom fields.', 'caldera-custom-fields' ),
+		"post_processor"	=>	'cf_custom_fields_capture_entry',
+		"template"			=>	CCF_PATH . "/includes/config.php",
+		"default"			=>	array(
+			'post_status'	=>	"draft"
+		),
+		"meta_template"		=>	CCF_PATH . "/includes/meta_template.php",
+		"magic_tags"		=>	array(
+			"ID"
+		)
+
+	);
+	return $processors;
+
+}
+
+/**
  * Prepared from data for edit post.
  *
  * @since 1.1.0
@@ -221,34 +250,7 @@ function cf_custom_fields_get_post_type_entry($data, $form, $entry_id){
 	return $data;
 }
 
-/**
- * Register this as a processor.
- *
- * @uses "caldera_forms_get_form_processors" filter
- *
- * @param $processors
- *
- * @return mixed
- */
-function cf_custom_fields_posttype_process($processors){
 
-	$processors['post_type'] = array(
-		"name"				=>	__( 'Save as Post Type', 'caldera-custom-fields' ),
-		"description"		=>	__( 'Store form entries as a Post with custom fields.', 'caldera-custom-fields' ),
-		"post_processor"	=>	'cf_custom_fields_capture_entry',
-		"template"			=>	CCF_PATH . "/includes/config.php",
-		"default"			=>	array(
-			'post_status'	=>	"draft"
-		),
-		"meta_template"		=>	CCF_PATH . "/includes/meta_template.php",
-		"magic_tags"		=>	array(
-			"ID"
-		)
-
-	);
-	return $processors;
-
-}
 
 /**
  * Process entry and save as post/ post meta.
