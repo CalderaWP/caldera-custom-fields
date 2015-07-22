@@ -1,21 +1,18 @@
 === Caldera Custom Fields ===
-Contributors: Desertsnowman
-Tags: Custom metabox, caldera forms, form as metabox, custom metaboxes, custom fields, custom field, form custom field
+Contributors: Desertsnowman, Shelob9
+Tags: Custom metabox, caldera forms, form as metabox, custom metaboxes, custom fields, custom field, form custom field, form to post type, calderawp
 Requires at least: 3.9
-Tested up to: 4.1
-Stable tag: 1.0.5
+Tested up to: 4.3
+Stable tag: 2.0.0
 License: GPLv2
 
-A Form Processor for Caldera Forms that sets a form as a metabox for custom fields.
+Caldera Forms to post types and custom fields: front-end or back-end
 
 == Description ==
-A Free addon processor for [Caldera Forms](http://wordpress.org/plugins/caldera-forms/) that allows you to use a form as a Custom Metabox. Entries are saved as custom fields using the field slug as the meta key.
-
-Using the advanced conditional logic, allows you to make great progressive metaboxes.
-
+A free addon for [Caldera Forms](http://wordpress.org/plugins/caldera-forms/) to create or edit posts, including custom post types and custom fields. Can be used as a standalone form for front-end editing and as a custom metabox generator in the post editor.
 == Installation ==
 
-Other than using the automatic plugin installer from pluggins page, You can extract the contents and upload the cf-metaboxes folder to /wp-content/plugins/ directory.
+Other than using the automatic plugin installer from plugins page, You can extract the contents and upload the cf-metaboxes folder to /wp-content/plugins/ directory.
 
 Activate the plugin through the 'Plugins' menu in WordPress
 
@@ -33,6 +30,9 @@ none yet.
 2. Using conditional logic to make great progressive metaboxes.
 
 == Changelog ==
+
+= 2.0.0 =
+Added a second processor for using Caldera Forms to create and edit posts and custom fields
 
 = 1.0.5 =
 * Support to handle multiple form metaboxes
