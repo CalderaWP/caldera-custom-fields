@@ -27,6 +27,7 @@ function cf_custom_fields_posttype_process($processors){
 
 	$processors['post_type'] = array(
 		"name"				=>	__( 'Custom Fields: Save as Post Type', 'caldera-custom-fields' ),
+		"author"            =>  'David Cramer for CalderaWP LLC',
 		"description"		=>	__( 'Store form entries as a post with custom fields.', 'caldera-custom-fields' ),
 		"post_processor"	=>	'cf_custom_fields_capture_entry',
 		"template"			=>	CCF_PATH . "/includes/config.php",
