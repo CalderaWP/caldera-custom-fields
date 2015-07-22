@@ -40,7 +40,7 @@ function cf_custom_fields_register_metabox_processor($processors){
 		"description"		=>	__( 'Use a form as a custom metabox in the post editor.', 'caldera-custom-fields' ),
 		"single"			=>	true,
 		"processor"			=>	'cf_custom_fields_save_meta_data',
-		"template"			=>	CCF_PATH . "/includes/metabox-config.php",
+		"template"			=>	trailingslashit( CCF_PATH ) . "includes/metabox-config.php",
 		"icon"				=>	CCF_URL . "/metabox-icon.png",
 		"conditionals"		=>	false,
 	);
