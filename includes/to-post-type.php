@@ -36,7 +36,8 @@ function cf_custom_fields_posttype_process($processors){
 		),
 		"meta_template"		=>	trailingslashit( CCF_PATH ) . "includes/meta_template.php",
 		"magic_tags"		=>	array(
-			"ID"
+			"ID",
+			"permalink"
 		)
 
 	);
@@ -348,7 +349,7 @@ function cf_custom_fields_capture_entry($config, $form){
 		update_post_meta( $entry_id, $form['fields'][$field]['slug'], $value );
 	}
 
-	return array('Post ID' => $entry_id);
+	return array('Post ID' => $entry_id, 'ID' => $entry_id, 'permalink' => get_permalink( $entry_id ) );
 }
 
 /**
