@@ -3,7 +3,7 @@ Contributors: Desertsnowman, Shelob9
 Tags: Custom metabox, caldera forms, form as metabox, custom metaboxes, custom fields, custom field, form custom field, form to post type, calderawp
 Requires at least: 3.9
 Tested up to: 4.3
-Stable tag: 2.0.1
+Stable tag: 2.0.2
 License: GPLv2
 
 Caldera Forms to post types and custom fields: front-end or back-end
@@ -30,6 +30,9 @@ none yet.
 2. Using conditional logic to make great progressive metaboxes.
 
 == Changelog ==
+
+= 2.0.2 =
+Added permalink magic tag for using the posts permalink in another processor.
 
 = 2.0.1 =
 Fix a broken include for post type config in admin.
