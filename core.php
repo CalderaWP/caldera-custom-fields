@@ -3,7 +3,7 @@
  * Plugin Name: Caldera Custom Fields
  * Plugin URI:  
  * Description: Create custom fields with powerful conditionals and processors using a Caldera Forms as the metabox designer.
- * Version:     2.0.2
+ * Version:     2.0.3
  * Author:      David Cramer for CalderaWP LLC
  * Author URI:  
  * License:     GPL-2.0+
@@ -12,7 +12,7 @@
 
 define( 'CCF_PATH',  plugin_dir_path( __FILE__ ) );
 define( 'CCF_URL',  plugin_dir_url( __FILE__ ) );
-define( 'CCF_VER', '2.0.2' );
+define( 'CCF_VER', '2.0.3' );
 define( 'CCF_CORE',  __FILE__ );
 
 
