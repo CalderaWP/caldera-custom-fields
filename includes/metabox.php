@@ -21,7 +21,6 @@ if( is_admin() ){
 	add_action('caldera_forms_save_form_register', 'cf_custom_fields_metabox_save_form');
 
 
-
 }
 
 /**
@@ -75,7 +74,7 @@ function cf_custom_fields_metabox_save_form($form){
 		update_option( $form['ID'], $form );
 
 		// update register
-		$forms = get_option('_caldera_forms');
+		$forms = Caldera_Forms::get_forms( true );
 		$forms[$form['ID']]['db_support'] = 0;
 		$forms[$form['ID']]['mailer']['enable_mailer'] = 0;
 		update_option( '_caldera_forms', $forms );
@@ -97,9 +96,9 @@ function cf_custom_fields_metabox_save_form($form){
  *
  * @return bool
  */
-function cf_custom_fields_prevent_redirect($url, $data, $form){
+function cf_custom_fields_prevent_redirect($url, $form, $process_id){
+
 	if( !empty($form['is_metabox'])){
-		global $post;
 		return false;
 	}
 
@@ -116,6 +115,7 @@ function cf_custom_fields_prevent_redirect($url, $data, $form){
  */
 function cf_custom_fields_save_meta_data($config, $form){
 	global $post;
+
 	if(!is_admin()){
 		return;
 	}
@@ -288,16 +288,17 @@ function cf_custom_fields_render($post, $args){
 	if(isset($_GET['cf_su'])){
 		unset($_GET['cf_su']);
 	}
-	add_filter('caldera_forms_render_get_entry', 'cf_custom_fields_get_meta_data', 10, 2);
-
+	add_filter( 'caldera_forms_render_pre_get_entry', 'cf_custom_fields_get_meta_data', 10, 2);
+	add_filter( 'caldera_forms_render_form_element', function( $element ){
+		return 'div';
+	} );
 	ob_start();
-	echo Caldera_Forms::render_form($args['id'], 259);
-	$form = str_replace('<form', '<div', ob_get_clean());
-	$form = str_replace('</form>', '</div>', $form);
+	echo Caldera_Forms::render_form( $args['id'] );
+	
+	$form = str_replace('_cf_verify', 'metabox_cf_verify', ob_get_clean());
 
 	// register this form for processing'
 	echo '<input type="hidden" name="cf_metabox_forms[]" value="' . $args['id'] . '">';
-
 	echo $form;
 
 }
