@@ -222,9 +222,9 @@ function cf_custom_fields_form_as_metabox() {
 			wp_enqueue_script( 'cf-frontend-script-init', CFCORE_URL . 'assets/js/frontend-script-init.min.js', array('jquery'), null, true);
 
 			// metabox & gridcss
-			wp_enqueue_style( 'cf-metabox-grid-styles', plugin_dir_url(__FILE__) . '/css/metagrid.css');
+			wp_enqueue_style( 'cf-metabox-grid-styles', CCF_URL . 'css/metagrid.css');
 			wp_enqueue_style( 'cf-metabox-field-styles', CFCORE_URL . 'assets/css/fields.min.css');
-			wp_enqueue_style( 'cf-metabox-styles', plugin_dir_url(__FILE__) . '/css/metabox.css');
+			wp_enqueue_style( 'cf-metabox-styles', CCF_URL . 'css/metabox.css');
 		}
 	}
 
