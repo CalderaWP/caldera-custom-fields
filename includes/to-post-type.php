@@ -346,7 +346,20 @@ function cf_custom_fields_capture_entry($config, $form){
 				cf_custom_fields_attach_file( $file , $entry_id );
 			}
 		}
-		update_post_meta( $entry_id, $form['fields'][$field]['slug'], $value );
+
+		$slug = $form['fields'][$field]['slug'];
+
+		/**
+		 * Filter value before saving using to post type processor
+		 *
+		 * @since 2.0.3
+		 *
+		 * @param mixed $value The value to be saved
+		 * @param string $slug Slug of field
+		 * @param int $entry ID of post
+		 */
+		$value = apply_filters( 'cf_custom_fields_pre_save_meta_key_to_post_type', $value, $slug, $entry_id );
+		update_post_meta( $entry_id, $slug, $value );
 	}
 
 	return array('Post ID' => $entry_id, 'ID' => $entry_id, 'permalink' => get_permalink( $entry_id ) );

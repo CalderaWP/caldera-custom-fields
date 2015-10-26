@@ -132,7 +132,19 @@ function cf_custom_fields_save_meta_data($config, $form){
 		if(empty($form['fields'][$key])){
 			continue;
 		}
-		update_post_meta( $post->ID, $form['fields'][$key]['slug'], $value );
+
+		$slug = $form['fields'][$field]['slug'];
+
+		/**
+		 * Filter value before saving using to metabox processor
+		 * @since 2.0.3
+		 *
+		 * @param mixed $value The value to be saved
+		 * @param string $slug Slug of field
+		 * @param int $post_id ID of post
+		 */
+		$value = apply_filters( 'cf_custom_fields_pre_save_meta_key_metabox', $value, $slug, $post->ID );
+		update_post_meta( $post->ID, $slug, $value );
 		if(isset($field_toremove[$form['fields'][$key]['slug']])){
 			unset($field_toremove[$form['fields'][$key]['slug']]);
 		}
