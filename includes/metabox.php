@@ -34,8 +34,8 @@ if( is_admin() ){
  */
 function cf_custom_fields_register_metabox_processor($processors){
 	$processors['cf_asmetabox'] = array(
-		"name"				=>	__( 'Custom Fields: Post Metabox', 'caldera-custom-fields' ),
-		"author"            =>  'David Cramer for CalderaWP LLC',
+		"name"				=>	__( 'Custom Fields Post Metabox', 'caldera-custom-fields' ),
+		"author"            =>  'David Cramer',
 		"description"		=>	__( 'Use a form as a custom metabox in the post editor.', 'caldera-custom-fields' ),
 		"single"			=>	true,
 		"processor"			=>	'cf_custom_fields_save_meta_data',
