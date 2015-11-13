@@ -33,6 +33,7 @@ none yet.
 
 = 2.0.4 =
 Added visual_editor as accepted type for content area in save to post type
+Added better icons to the processor selector
 
 = 2.0.3 =
 Corrected a bug that prevented saving new posts with CF 1.2+
