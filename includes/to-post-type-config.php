@@ -45,7 +45,7 @@
 		<?php _e('Post Content', 'caldera-custom-fields'); ?>
 	</label>
 	<div class="caldera-config-field">
-		{{{_field slug="post_content" type="paragraph"}}}
+		{{{_field slug="post_content" type="paragraph,visual_editor,text"}}}
 	</div>
 </div>
 
