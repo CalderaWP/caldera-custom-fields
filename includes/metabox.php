@@ -133,7 +133,7 @@ function cf_custom_fields_save_meta_data($config, $form){
 			continue;
 		}
 
-		$slug = $form['fields'][$field]['slug'];
+		$slug = $form['fields'][$key]['slug'];
 
 		/**
 		 * Filter value before saving using to metabox processor
