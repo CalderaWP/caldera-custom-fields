@@ -3,7 +3,7 @@ Contributors: Desertsnowman, Shelob9
 Tags: Custom metabox, caldera forms, form as metabox, custom metaboxes, custom fields, custom field, form custom field, form to post type, calderawp
 Requires at least: 3.9
 Tested up to: 4.3
-Stable tag: 2.0.4
+Stable tag: 2.0.4.1
 License: GPLv2
 
 Caldera Forms to post types and custom fields: front-end or back-end
@@ -30,6 +30,9 @@ none yet.
 2. Using conditional logic to make great progressive metaboxes.
 
 == Changelog ==
+
+= 2.0.4.1 =
+Fixed a bug that caused saving of said fields not work.
 
 = 2.0.4 =
 Added visual_editor as accepted type for content area in save to post type
