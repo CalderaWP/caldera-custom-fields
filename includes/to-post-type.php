@@ -283,6 +283,10 @@ function cf_custom_fields_capture_entry($config, $form){
 		'post_excerpt'	=> Caldera_Forms::do_magic_tags( $config['post_excerpt'] ),
 		'comment_status'=> $config['comment_status'],
 	);
+	
+	if( empty( $entry[ 'post_content' ] ) ){
+		$entry[ 'post_content' ] = '';
+	}
 
 	// set the ID
 	if( !empty( $config['ID'] ) ){
