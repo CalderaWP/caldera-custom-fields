@@ -24,3 +24,48 @@ function cf_custom_fields_init() {
 	include_once( CCF_PATH . '/includes/metabox.php' );
 	include_once( CCF_PATH . '/includes/to-post-type.php' );
 }
+
+/**
+ * Get Caldera Forms
+ *
+ * Includes backwards compat for pre-Caldera Forms 1.3.4
+ *
+ * @since 2.0.5
+ *
+ * @return array|void
+ */
+function cf_custom_fields_get_forms(){
+	if ( class_exists( 'Caldera_Forms_Forms' )  ) {
+		$forms = Caldera_Forms_Forms::get_forms( true );
+	} else {
+		$forms = Caldera_Forms::get_forms();
+	}
+
+	return $forms;
+}
+
+/**
+ * Get Caldera Forms
+ *
+ * Includes backwards compat for pre-Caldera Forms 1.3.4
+ *
+ * @since 2.0.5
+ *
+ * @param string $id_name ID or name of form
+ *
+ * @return array|void
+ */
+function cf_custom_fields_get_form( $id_name ){
+	if ( class_exists( 'Caldera_Forms_Forms' )  ) {
+		$form = Caldera_Forms_Forms::get_form( $id_name );
+	} else {
+		$form = Caldera_Forms::get_form( $id_name );
+	}
+
+	if( isset( $form[ 'ID' ] ) && ! isset( $form[ 'id' ] ) ){
+		$form[ 'id' ] = $form[ 'ID' ];
+	}
+
+	return $form;
+
+}
