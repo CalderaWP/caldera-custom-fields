@@ -34,9 +34,9 @@ if( is_admin() ){
  */
 function cf_custom_fields_register_metabox_processor($processors){
 	$processors['cf_asmetabox'] = array(
-		"name"				=>	__( 'Custom Fields Post Metabox', 'caldera-custom-fields' ),
+		"name"				=>	__( 'Custom Fields Post Metabox', 'caldera-forms-metabox' ),
 		"author"            =>  'David Cramer',
-		"description"		=>	__( 'Use a form as a custom metabox in the post editor.', 'caldera-custom-fields' ),
+		"description"		=>	__( 'Use a form as a custom metabox in the post editor.', 'caldera-forms-metabox' ),
 		"single"			=>	true,
 		"processor"			=>	'cf_custom_fields_save_meta_data',
 		"template"			=>	trailingslashit( CCF_PATH ) . "includes/metabox-config.php",
@@ -57,7 +57,7 @@ function cf_custom_fields_register_metabox_processor($processors){
  * @param $form
  */
 function cf_custom_fields_metabox_save_form($form){
-	if(!empty($form['is_metabox'])){
+	if(is_array( $form )&& ! empty($form['is_metabox'])){
 
 		// disable DB support
 		$form['db_support'] = 0;

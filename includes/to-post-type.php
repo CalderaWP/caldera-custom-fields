@@ -26,9 +26,9 @@ add_filter( 'caldera_forms_get_addons', 'cf_custom_fields_savetoposttype_addon' 
 function cf_custom_fields_posttype_process($processors){
 
 	$processors['post_type'] = array(
-		"name"				=>	__( 'Save as Post Type', 'caldera-custom-fields' ),
+		"name"				=>	__( 'Save as Post Type', 'caldera-forms-metabox' ),
 		"author"            =>  'David Cramer',
-		"description"		=>	__( 'Store form entries as a post with custom fields.', 'caldera-custom-fields' ),
+		"description"		=>	__( 'Store form entries as a post with custom fields.', 'caldera-forms-metabox' ),
 		"post_processor"	=>	'cf_custom_fields_capture_entry',
 		"template"			=>	trailingslashit( CCF_PATH ) . "includes/to-post-type-config.php",
 		"icon"				=>	CCF_URL . "/post-type.png",
@@ -150,7 +150,7 @@ function cf_custom_fields_taxonomies(){
  */
 function cf_custom_fields_meta_view($meta){
 	$postid = $meta['meta_value'];
-	$meta['meta_key'] = _('Post Name', 'caldera-custom-fields' );
+	$meta['meta_key'] = _('Post Name', 'caldera-forms-metabox' );
 	$meta['meta_value'] = get_the_title($meta['meta_value']);
 	$meta['meta_value'] .= '<div><a href="post.php?post='.$postid.'&action=edit" target="_blank">'.__('Edit').'</a> | <a href="' . get_permalink( $postid ) . '" target="_blank">'.__('View').'</a></div>';
 	$meta['post'] = get_post( $postid );
