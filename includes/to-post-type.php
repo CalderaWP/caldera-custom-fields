@@ -11,7 +11,6 @@ add_filter( 'caldera_forms_render_get_entry', 'cf_custom_fields_get_post_type_en
 add_filter( 'caldera_forms_get_entry_meta_db_storage', 'cf_custom_fields_meta_view');
 add_action( 'caldera_forms_processor_templates', 'cf_custom_fields_meta_template');
 add_filter( 'caldera_forms_render_pre_get_entry', 'cf_custom_fields_populate_form_edit', 11, 3 );
-add_action( 'wp_ajax_cf_custom_fields_taxonomies', 'cf_custom_fields_taxonomies');
 add_filter( 'caldera_forms_get_addons', 'cf_custom_fields_savetoposttype_addon' );
 
 /**
@@ -124,19 +123,6 @@ function cf_custom_fields_meta_template(){
 		</div>
 	</script>
 	<?php
-}
-
-/**
- * Get taxonomies
- *
- * @since 1.1.0
- *
- * @uses "wp_ajax_cf_custom_fields_taxonomies" action
- */
-function cf_custom_fields_taxonomies(){
-
-	$taxonomy_objects = get_object_taxonomies( $_POST['_value'], 'objects' );
-	var_dump( $taxonomy_objects );
 }
 
 /**
