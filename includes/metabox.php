@@ -69,15 +69,20 @@ function cf_custom_fields_metabox_save_form($form){
 
 		// disable mailer
 		$form['mailer']['enable_mailer'] = 0;
+		$form['db_support'] = 0;
+		$form['mailer']['enable_mailer'] = 0;
 
-		// update form
-		update_option( $form['ID'], $form );
 
-		// update register
-		$forms = Caldera_Forms::get_forms( true );
-		$forms[$form['ID']]['db_support'] = 0;
-		$forms[$form['ID']]['mailer']['enable_mailer'] = 0;
-		update_option( '_caldera_forms', $forms );
+
+		if ( ! class_exists( 'Caldera_Forms_Forms' ) ) {
+			$forms = cf_custom_fields_get_forms();
+			$forms[$form['ID']]['db_support'] = 0;
+			$forms[$form['ID']]['mailer']['enable_mailer'] = 0;
+			update_option( $form['ID'], $form );
+			update_option( '_caldera_forms', $forms );
+		}else{
+			Caldera_Forms_Forms::save_form( $form );
+		}
 	}
 
 }
@@ -167,14 +172,19 @@ function cf_custom_fields_save_meta_data($config, $form){
  * @since 1.?.?
  */
 function cf_custom_fields_form_as_metabox() {
-	$forms = get_option( '_caldera_forms' );
+	$forms = cf_custom_fields_get_forms();
 	if(empty($forms)){
 		return;
 	}
 	foreach($forms as $form){
-
+		$form = cf_custom_fields_get_form( $form[ 'ID' ] );
+		if( ! is_array( $form ) ){
+			continue;
+		}
+		
 		if(!empty($form['is_metabox'])){
-			$form = get_option($form['ID']);
+			
+			
 			// is metabox processor
 			if(!empty($form['processors'][$form['is_metabox']]['config']['posttypes'])){
 
