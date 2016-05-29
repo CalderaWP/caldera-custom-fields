@@ -1,5 +1,5 @@
 <div class="caldera-config-group">
-	<label><?php echo __('Post Types', 'caldera-forms-metabox'); ?> </label>
+	<label><?php esc_html_e('Post Types', 'caldera-forms-metabox'); ?> </label>
 	<div class="post_types_check" style="padding-top: 1px;">
 	<?php
 
@@ -13,7 +13,7 @@
 </div>
 
 <div class="caldera-config-group">
-	<label><?php echo __('Context', 'caldera-forms-metabox'); ?> </label>
+	<label><?php esc_html_e('Context', 'caldera-forms-metabox'); ?> </label>
 	<div class="caldera-config-field">
 		<select class="block-input field-config" name="{{_name}}[context]">
 			<option value="normal" {{#is context value="normal"}}selected="selected"{{/is}}>Normal</option>
@@ -24,7 +24,7 @@
 </div>
 
 <div class="caldera-config-group">
-	<label><?php echo __('Priority', 'caldera-forms-metabox'); ?> </label>
+	<label><?php esc_html_e('Priority', 'caldera-forms-metabox'); ?> </label>
 	<div class="caldera-config-field">
 		<select class="block-input field-config" name="{{_name}}[priority]">
 			<option value="default"{{#is priority value="default"}} selected="selected"{{/is}}>Default</option>
@@ -34,5 +34,5 @@
 		</select>
 	</div>
 </div>
-<p class="description"><?php echo __('Note: This processor disables the Notification Mailer, Ajax and Internal Entry capture.', 'caldera-forms-metabox'); ?></p>
+<p class="description"><?php esc_html_e( 'Note: This processor disables the Notification Mailer, Ajax and Internal Entry capture.', 'caldera-forms-metabox'); ?></p>
 <input type="hidden" value="{{_id}}" name="config[is_metabox]">

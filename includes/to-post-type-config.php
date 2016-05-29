@@ -1,6 +1,6 @@
 <div class="caldera-config-group">
 	<label>
-		<?php _e('Post Type', 'caldera-custom-fields'); ?>
+		<?php esc_html_e('Post Type', 'caldera-custom-fields'); ?>
 	</label>
 	<div class="caldera-config-field">
 		<select class="block-input field-config required disabled-for-now-ajax-trigger" data-action="cf_post_type_taxonomies" data-target="#type-taxonomies{{_id}}" data-event="change" name="{{_name}}[post_type]">
@@ -15,7 +15,7 @@
 </div>
 <div class="caldera-config-group">
 	<label>
-		<?php _e('Post Status', 'caldera-custom-fields'); ?>
+		<?php esc_html_e('Post Status', 'caldera-custom-fields'); ?>
 	</label>
 	<div class="caldera-config-field">
 		<input type="text" class="block-input field-config magic-tag-enabled required" name="{{_name}}[post_status]" value="{{post_status}}">
@@ -23,18 +23,18 @@
 </div>
 <div class="caldera-config-group">
 	<label>
-		<?php _e('Post ID', 'caldera-custom-fields'); ?>
+		<?php esc_html_e('Post ID', 'caldera-custom-fields'); ?>
 	</label>
 	<div class="caldera-config-field">
 		<input type="text" class="block-input field-config magic-tag-enabled" name="{{_name}}[ID]" value="{{ID}}">
 		<p class="description">
-			<?php _e( sprintf( 'Leave blank to create a new post. Pass an existing post ID to edit a post. The magic tag %1s is especially useful for this purpose.', '<code>{embed_post:ID}</code>' ), 'caldera-custom-fields'); ?>
+			<?php esc_html_e( sprintf( 'Leave blank to create a new post. Pass an existing post ID to edit a post. The magic tag %1s is especially useful for this purpose.', '<code>{embed_post:ID}</code>' ), 'caldera-custom-fields'); ?>
 		</p>
 	</div>
 </div>
 <div class="caldera-config-group">
 	<label>
-		<?php _e('Post Title', 'caldera-custom-fields'); ?>
+		<?php esc_html_e('Post Title', 'caldera-custom-fields'); ?>
 	</label>
 	<div class="caldera-config-field">
 		{{{_field slug="post_title" type="text" required="true"}}}
@@ -42,7 +42,7 @@
 </div>
 <div class="caldera-config-group">
 	<label>
-		<?php _e('Post Content', 'caldera-custom-fields'); ?>
+		<?php esc_html_e('Post Content', 'caldera-custom-fields'); ?>
 	</label>
 	<div class="caldera-config-field">
 		{{{_field slug="post_content" type="paragraph,visual_editor,text"}}}
@@ -51,7 +51,7 @@
 
 <div class="caldera-config-group">
 	<label>
-		<?php _e('Post Author', 'caldera-custom-fields'); ?>
+		<?php esc_html_e('Post Author', 'caldera-custom-fields'); ?>
 	</label>
 	<div class="caldera-config-field">
 		<input type="text" class="block-input field-config magic-tag-enabled" name="{{_name}}[post_author]" value="{{post_author}}">
@@ -59,7 +59,7 @@
 </div>
 
 <div class="caldera-config-group">
-	<label><?php _e('Post Parent', 'caldera-custom-fields'); ?> </label>
+	<label><?php esc_html_e('Post Parent', 'caldera-custom-fields'); ?> </label>
 	<div class="caldera-config-field">
 		<input type="text" class="block-input field-config magic-tag-enabled" name="{{_name}}[post_parent]" value="{{post_parent}}">
 	</div>
@@ -68,7 +68,7 @@
 
 <div class="caldera-config-group">
 	<label>
-		<?php _e('To Ping', 'caldera-custom-fields'); ?>
+		<?php esc_html_e('To Ping', 'caldera-custom-fields'); ?>
 	</label>
 	<div class="caldera-config-field">
 		<input type="text" class="block-input field-config magic-tag-enabled" name="{{_name}}[to_ping]" value="{{to_ping}}">
@@ -78,7 +78,7 @@
 
 <div class="caldera-config-group">
 	<label>
-		<?php _e('Post Password', 'caldera-custom-fields'); ?>
+		<?php esc_html_e('Post Password', 'caldera-custom-fields'); ?>
 	</label>
 	<div class="caldera-config-field">
 		<input type="text" class="block-input field-config magic-tag-enabled" name="{{_name}}[post_password]" value="{{post_password}}">
@@ -87,7 +87,7 @@
 
 <div class="caldera-config-group">
 	<label>
-		<?php _e('Post Excerpt', 'caldera-custom-fields'); ?>
+		<?php esc_html_e('Post Excerpt', 'caldera-custom-fields'); ?>
 	</label>
 	<div class="caldera-config-field">
 		<input type="text" class="block-input field-config magic-tag-enabled" name="{{_name}}[post_excerpt]" value="{{post_excerpt}}">
@@ -96,15 +96,15 @@
 
 <div class="caldera-config-group">
 	<label>
-		<?php _e('Comment Status', 'caldera-custom-fields'); ?>
+		<?php esc_html_e('Comment Status', 'caldera-custom-fields'); ?>
 	</label>
 	<div class="caldera-config-field">
 		<select class="field-config" name="{{_name}}[comment_status]">
 			<option value="closed" {{#is comment_status value="closed"}}selected="selected"{{/is}}>
-				<?php _e('Closed', 'caldera-custom-fields'); ?>
+				<?php esc_html_e('Closed', 'caldera-custom-fields'); ?>
 			</option>
 			<option value="open" {{#is comment_status value="open"}}selected="selected"{{/is}}>
-				<?php _e('Open', 'caldera-custom-fields'); ?>
+				<?php esc_html_e('Open', 'caldera-custom-fields'); ?>
 			</option>
 		</select>
 	</div>
@@ -120,11 +120,11 @@
 	</div>
 </div>
 
-<h3><?php _e( 'Custom Fields', 'caldera-custom-fields' ); ?></h3>
+<h3><?php esc_html_e( 'Custom Fields', 'caldera-custom-fields' ); ?></h3>
 <p class="description">
-	<?php _e('All form fields not set above, will be saved as post-meta/custom fields using the form field slug as the custom field name.', 'caldera-custom-fields' ); ?>
+	<?php esc_html_e('All form fields not set above, will be saved as post-meta/custom fields using the form field slug as the custom field name.', 'caldera-custom-fields' ); ?>
 </p>
 <p class="description">
-	<?php _e('File fields will be uploaded to the Media Library and attached to post.', 'caldera-custom-fields'); ?>
+	<?php esc_html_e('File fields will be uploaded to the Media Library and attached to post.', 'caldera-custom-fields'); ?>
 </p>
 
