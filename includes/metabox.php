@@ -17,8 +17,9 @@ add_filter('caldera_forms_get_form_processors', 'cf_custom_fields_register_metab
 if( is_admin() ){
 	// disable redirect
 	add_filter('caldera_forms_redirect_url', 'cf_custom_fields_prevent_redirect', 1, 4);
+
 	// save action to disable mailer
-	add_action('caldera_forms_save_form_register', 'cf_custom_fields_metabox_save_form');
+	add_filter('caldera_forms_presave_form', 'cf_custom_fields_metabox_save_form');
 
 
 }
@@ -52,40 +53,40 @@ function cf_custom_fields_register_metabox_processor($processors){
  *
  * @since 1.?.?
  *
- * @uses "caldera_forms_save_form_register" action
+ * @uses "caldera_forms_presave_form" filter
  *
  * @param $form
  */
 function cf_custom_fields_metabox_save_form($form){
-	if(is_array( $form )&& ! empty($form['is_metabox'])){
+	if ( isset( $form[ 'processors' ] ) ) {
+		foreach ( $form[ 'processors' ] as $processor ) {
+			if ( 'cf_asmetabox' == $processor[ 'type' ] ) {
+				$form[ 'is_metabox' ] = true;
+				// disable DB support
+				$form['db_support'] = 0;
 
-		// disable DB support
-		$form['db_support'] = 0;
+				// no ajax forms
+				if( isset( $form['form_ajax'] ) ){
+					unset( $form['form_ajax'] );
+				}
 
-		// no ajax forms
-		if( isset( $form['form_ajax'] ) ){
-			unset( $form['form_ajax'] );
+				// disable mailer
+				$form['mailer']['enable_mailer'] = 0;
+				$form['db_support'] = 0;
+				$form['mailer']['enable_mailer'] = 0;
+
+				return $form;
+
+			}
 		}
 
-		// disable mailer
-		$form['mailer']['enable_mailer'] = 0;
-		$form['db_support'] = 0;
-		$form['mailer']['enable_mailer'] = 0;
-
-
-
-		if ( ! class_exists( 'Caldera_Forms_Forms' ) ) {
-			$forms = cf_custom_fields_get_forms();
-			$forms[$form['ID']]['db_support'] = 0;
-			$forms[$form['ID']]['mailer']['enable_mailer'] = 0;
-			update_option( $form['ID'], $form );
-			update_option( '_caldera_forms', $forms );
-		}else{
-			Caldera_Forms_Forms::save_form( $form );
-		}
 	}
 
+	return $form;
+
 }
+
+
 
 
 /**
