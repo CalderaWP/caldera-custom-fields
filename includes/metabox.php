@@ -15,8 +15,12 @@ add_filter('caldera_forms_get_form_processors', 'cf_custom_fields_register_metab
 
 // admin filters & actions
 if( is_admin() ){
+
 	// disable redirect
 	add_filter('caldera_forms_redirect_url', 'cf_custom_fields_prevent_redirect', 1, 4);
+
+	// disable mailer
+	add_filter('caldera_forms_get_form', 'cf_custom_fields_prevent_mailer', 1, 4);
 
 	// save action to disable mailer
 	add_filter('caldera_forms_presave_form', 'cf_custom_fields_metabox_save_form');
@@ -24,6 +28,27 @@ if( is_admin() ){
 
 }
 
+/**
+ * Filter form database and mailer options if is set as a metabox
+ *
+ * @uses "caldera_forms_get_form"
+ *
+ * @param $form
+ *
+ * @return array
+ */
+function cf_custom_fields_prevent_mailer( $form ){
+	$processors = Caldera_Forms::get_processor_by_type('cf_asmetabox', $form);
+	if( !empty( $processors ) ){
+		if( isset( $form['mailer']['on_insert'] ) ){
+			unset( $form['mailer']['on_insert'] );
+		}
+		if( !empty( $form['mailer']['db_support'] ) ){
+			$form['mailer']['db_support'] = false;
+		}
+	}
+	return $form;
+}
 /**
  * Add the processor.
  *
@@ -182,12 +207,14 @@ function cf_custom_fields_form_as_metabox() {
 		if( ! is_array( $form ) ){
 			continue;
 		}
+		$processors = Caldera_Forms::get_processor_by_type('cf_asmetabox', $form);
 		
-		if(!empty($form['is_metabox'])){
-			
-			
+		if(!empty( $processors )){
+		
+			$processor = $processors[0];
+
 			// is metabox processor
-			if(!empty($form['processors'][$form['is_metabox']]['config']['posttypes'])){
+			if(!empty($form['processors'][ $processor['ID'] ]['config']['posttypes'])){
 
 				// add filter to get details of entry
 				add_filter('caldera_forms_get_entry_detail', 'cf_custom_fields_get_post_details', 10, 3);
@@ -195,14 +222,14 @@ function cf_custom_fields_form_as_metabox() {
 				// add filter to remove submit buttons
 				add_filter('caldera_forms_render_setup_field', 'cf_custom_fields_submit_button_removal');
 
-				foreach( $form['processors'][$form['is_metabox']]['config']['posttypes'] as $screen=>$enabled){
+				foreach( $form['processors'][ $processor['ID'] ]['config']['posttypes'] as $screen=>$enabled){
 					add_meta_box(
 						$form['ID'],
 						$form['name'],
 						'cf_custom_fields_render',
 						$screen,
-						$form['processors'][$form['is_metabox']]['config']['context'],
-						$form['processors'][$form['is_metabox']]['config']['priority']
+						$form['processors'][ $processor['ID'] ]['config']['context'],
+						$form['processors'][ $processor['ID'] ]['config']['priority']
 					);
 				}
 			}
