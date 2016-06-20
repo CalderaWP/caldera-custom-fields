@@ -15,9 +15,7 @@ define( 'CCF_URL',  plugin_dir_url( __FILE__ ) );
 define( 'CCF_VER', '2.1.0-b1' );
 define( 'CCF_CORE',  __FILE__ );
 
-add_filter( 'the_content', function(){
-	return Caldera_Forms::render_form( "CF574b4b40760d2" );
-});
+
 /**
  * Load plugin
  */
