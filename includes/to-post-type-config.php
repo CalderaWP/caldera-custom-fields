@@ -120,6 +120,13 @@
 	</div>
 </div>
 
+<div id="cf-custom-fields-taxonomies-settings">
+	<h3>
+		<?php esc_html_e( 'Taxonomies', 'caldera-forms-metabox' ); ?>
+	</h3>
+	<?php echo cf_custom_fields_taxonomy_ui(); ?>
+</div>
+
 <h3><?php esc_html_e( 'Custom Fields', 'caldera-forms-metabox' ); ?></h3>
 <p class="description">
 	<?php esc_html_e('All form fields not set above, will be saved as post-meta/custom fields using the form field slug as the custom field name.', 'caldera-forms-metabox' ); ?>
