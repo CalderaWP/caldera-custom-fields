@@ -1,9 +1,9 @@
 === Caldera Custom Fields ===
 Contributors: Desertsnowman, Shelob9
 Tags: Custom metabox, caldera forms, form as metabox, custom metaboxes, custom fields, custom field, form custom field, form to post type, calderawp
-Requires at least: 3.9
-Tested up to: 4.3
-Stable tag: 2.0.4.1
+Requires at least: 4.2
+Tested up to: 4.6
+Stable tag: 2.1.0
 License: GPLv2
 
 Caldera Forms to post types and custom fields: front-end or back-end
