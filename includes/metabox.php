@@ -154,11 +154,12 @@ function cf_custom_fields_save_meta_data($config, $form){
 	$data = Caldera_Forms::get_submission_data($form);
 
 	$field_toremove = array();
-	foreach($data as $key=>$value){
-		foreach($form['fields'] as $field){
-			$field_toremove[$field['slug']] = $field['slug'];
-		}
+
+	foreach($form['fields'] as $field){
+		// remove old data
+		delete_post_meta( $post->ID, $field['slug'] );
 	}
+
 	foreach($data as $key=>$value){
 		if(empty($form['fields'][$key])){
 			continue;
@@ -175,14 +176,16 @@ function cf_custom_fields_save_meta_data($config, $form){
 		 * @param int $post_id ID of post
 		 */
 		$value = apply_filters( 'cf_custom_fields_pre_save_meta_key_metabox', $value, $slug, $post->ID );
-		update_post_meta( $post->ID, $slug, $value );
+		if( is_array( $value ) ){
+			delete_post_meta( $post->ID, $slug );
+			foreach( $value as $single_value ){
+				add_post_meta( $post->ID, $slug, $single_value );				
+			}
+		}else{
+			update_post_meta( $post->ID, $slug, $value );
+		}
 		if(isset($field_toremove[$form['fields'][$key]['slug']])){
 			unset($field_toremove[$form['fields'][$key]['slug']]);
-		}
-	}
-	if(!empty($field_toremove)){
-		foreach($field_toremove as $key){
-			delete_post_meta( $post->ID, $key );
 		}
 	}
 
@@ -296,7 +299,15 @@ function cf_custom_fields_get_meta_data($data, $form){
 	global $post;
 	$entry = array();
 	foreach($form['fields'] as $fieldslug => $field ){
-		$entry[$fieldslug] = get_post_meta( $post->ID, $field['slug'], true );
+		$data = get_post_meta( $post->ID, $field['slug'] );
+		if( count( $data ) > 1 ){
+			foreach( $data as $item ){
+				$entry[$fieldslug][] = $item;
+			}
+		}else{
+			$entry[$fieldslug] = $data;
+		}
+		
 	}
 	return $entry;
 }
