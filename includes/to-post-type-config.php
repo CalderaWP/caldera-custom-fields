@@ -9,7 +9,7 @@
 			<?php
 			$post_types = get_post_types( array(), 'objects' );
 			foreach ( $post_types as $type ) {
-				echo "<option value=\"" . $type->name . "\" {{#is post_type value=\"" . $type->name . "\"}}selected=\"selected\"{{/is}}>" . $type->labels->name . "</option>\r\n";
+				echo "<option value=\"" . $type->name . "\" {{#is post_type value=\"" . $type->name . "\"}} selected=\"selected\" {{/is}}>" . $type->labels->name . "</option>\r\n";
 			}
 			?>
 		</select>
@@ -108,13 +108,11 @@
 	</label>
 	<div class="caldera-config-field">
 		<select class="field-config" name="{{_name}}[comment_status]">
-			<option value="closed" {{#is comment_status value="closed" }}selected="selected" {{
-			/is}}>
-			<?php esc_html_e( 'Closed', 'caldera-forms-metabox' ); ?>
+			<option value="closed" {{#is comment_status value="closed" }}selected="selected" {{/is}}>
+				<?php esc_html_e( 'Closed', 'caldera-forms-metabox' ); ?>
 			</option>
-			<option value="open" {{#is comment_status value="open" }}selected="selected" {{
-			/is}}>
-			<?php esc_html_e( 'Open', 'caldera-forms-metabox' ); ?>
+			<option value="open" {{#is comment_status value="open" }}selected="selected" {{/is}}>
+				<?php esc_html_e( 'Open', 'caldera-forms-metabox' ); ?>
 			</option>
 		</select>
 	</div>
