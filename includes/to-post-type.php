@@ -481,7 +481,25 @@ function cf_custom_fields_get_taxonomy_fields( $all_fields ){
 function cf_custom_fields_save_terms( $tax_fields, $post_id ){
 	if ( is_array( $tax_fields ) ) {
 		foreach ( $tax_fields as $taxonomy => $data ) {
-			$updated = wp_set_object_terms( $post_id, $data[ 'terms' ], $data[ 'taxonomy'] );
+			if( empty( $data[ 'terms' ] ) ){
+				continue;
+			}
+			$terms = $data[ 'terms' ];
+			if( is_numeric( $terms ) && false === strpos( $terms, ',' ) ){
+				$terms = (int) $terms;
+
+			}elseif( is_string( $terms ) && false != strpos( $terms, ',' ) ){
+				$terms = explode( ',', $terms );
+				foreach( $terms as $i => $term ){
+					$terms[ $i ] = intval( $terms[ $i ] );
+				}
+			}elseif( is_array( $terms ) ){
+				//yolo(?)
+			}else {
+				continue;
+			}
+
+			$updated = wp_set_object_terms( $post_id, $terms, $data[ 'taxonomy'] );
 			
 		}
 
