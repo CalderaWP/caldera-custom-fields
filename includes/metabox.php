@@ -305,6 +305,10 @@ function cf_custom_fields_get_meta_data($data, $form){
 				$entry[$fieldslug][] = $item;
 			}
 		}else{
+			if( is_array( $data ) ){
+				$data = $data[0];
+			}
+			
 			$entry[$fieldslug] = $data;
 		}
 		
