@@ -3,13 +3,13 @@ Contributors: Desertsnowman, Shelob9
 Tags: Custom metabox, caldera forms, form as metabox, custom metaboxes, custom fields, custom field, form custom field, form to post type, calderawp, front-end editor, front end editor
 Requires at least: 4.2
 Tested up to: 4.6
-Stable tag: 2.1.1
+Stable tag: 2.1.2
 License: GPLv2
 
 Caldera Forms to post types and custom fields: front-end or back-end
 
 == Description ==
-A free addon for [Caldera Forms](http://wordpress.org/plugins/caldera-forms/) to create or edit posts, including custom post types and custom fields. Can be used as a standalone form for front-end editing and as a custom metabox generator in the post editor.
+A free addon for [Caldera Forms](https://CalderaWP.com/downloads/caldera-forms) to create or edit posts, including custom post types and custom fields. Can be used as a standalone form for front-end editing and as a custom metabox generator in the post editor.
 == Installation ==
 
 Other than using the automatic plugin installer from plugins page, You can extract the contents and upload the cf-metaboxes folder to /wp-content/plugins/ directory.
@@ -30,6 +30,15 @@ none yet.
 2. Using conditional logic to make great progressive metaboxes.
 
 == Changelog ==
+
+= 2.1.2 =
+Fix minor bug fixes
+= 2.1.1 =
+Minor bug fixes
+
+= 2.1.0 =
+Make metabox compatible with CF 1.3.5+
+Add support for taxonomies
 
 = 2.0.4.1 =
 Fixed a bug that caused saving of said fields not work.

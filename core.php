@@ -12,7 +12,7 @@
 
 define( 'CCF_PATH',  plugin_dir_path( __FILE__ ) );
 define( 'CCF_URL',  plugin_dir_url( __FILE__ ) );
-define( 'CCF_VER', '2.1.1' );
+define( 'CCF_VER', '2.1.2' );
 define( 'CCF_CORE',  __FILE__ );
 
 
