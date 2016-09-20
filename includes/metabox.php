@@ -270,6 +270,9 @@ function cf_custom_fields_form_as_metabox() {
 				}
 			}
 
+            wp_enqueue_script( 'cf-validator' );
+            wp_enqueue_script( 'cf-validator-i18n' );
+
 			// if depts been set- scripts are used -
 			wp_enqueue_script( 'cf-frontend-fields', CFCORE_URL . 'assets/js/fields.min.js', array('jquery'), null, true);
 			wp_enqueue_script( 'cf-frontend-script-init', CFCORE_URL . 'assets/js/frontend-script-init.min.js', array('jquery'), null, true);
@@ -305,9 +308,12 @@ function cf_custom_fields_get_meta_data($data, $form){
 				$entry[$fieldslug][] = $item;
 			}
 		}else{
-			if( is_array( $data ) ){
-				$data = $data[0];
-			}
+
+			if( is_array( $data ) && isset( $data[0] ) && is_scalar( $data[0] )    ){
+                $data = $data[0];
+			}elseif( is_array( $data ) ){
+			    $data = '';
+            }
 			
 			$entry[$fieldslug] = $data;
 		}
