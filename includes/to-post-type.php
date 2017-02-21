@@ -347,7 +347,7 @@ function cf_custom_fields_capture_entry($config, $form){
 
 			}
 		}
-
+                $value = apply_filters('caldera_forms_save_field', $value, $form['fields'][$field] );
 
 
 		if(empty($form['fields'][$field])){
