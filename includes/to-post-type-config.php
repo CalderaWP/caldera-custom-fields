@@ -121,7 +121,7 @@
 <div class="caldera-config-group">
 	<label><?php _e( 'Featured Image', 'caldera-forms-metabox' ); ?> </label>
 	<div class="caldera-config-field">
-		{{{_field slug="featured_image" type="file"}}}
+		{{{_field slug="featured_image" type="file,advanced_file"}}}
 		<p class="description">
 			<?php esc_html_e( 'File will be uploaded to media library and attached as featured image.', 'caldera-forms-metabox' ); ?>
 		</p>
