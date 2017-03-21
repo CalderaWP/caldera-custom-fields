@@ -3,7 +3,7 @@
  * Functions/hooks for metabox
  *
  * @package   caldera_custom_fields
- * @copyright 2014-2015 CalderaWP LLC and David Cramer
+ * @copyright 2014-2017 CalderaWP LLC and David Cramer
  */
 
 // add actions
@@ -12,6 +12,26 @@ add_action( 'save_post', 'cf_custom_fields_save_post' );
 
 // add filters
 add_filter('caldera_forms_get_form_processors', 'cf_custom_fields_register_metabox_processor');
+
+
+/**
+ * Before regular submit kicks in, check if is metabox save, verify nonce then remove regular path to process.
+ *
+ * @since 2.1.3
+ *
+ * Save will happen at "save_post" action
+ */
+add_action( 'wp_loaded', function(){
+	if (isset($_POST['_cf_frm_id']) && $_POST[ 'cf_metabox_forms'] ) {
+		if ( isset( $_POST[ '_cf_verify' ] ) && Caldera_Forms_Render_Nonce::verify_nonce( $_POST[ '_cf_verify' ], $_POST[ '_cf_frm_id' ] ) ) {
+			remove_action( 'wp_loaded', array( Caldera_Forms::get_instance(), 'cf_init_system' ), 25 );
+
+		}
+
+	}
+}, 19 );
+
+
 
 // admin filters & actions
 if( is_admin() ){
@@ -344,9 +364,7 @@ function cf_custom_fields_render($post, $args){
 		return 'div';
 	} );
 	ob_start();
-	echo Caldera_Forms::render_form( $args['id'] );
-	
-	$form = str_replace('_cf_verify', 'metabox_cf_verify', ob_get_clean());
+	$form =  Caldera_Forms::render_form( $args['id'] );
 
 	// register this form for processing'
 	echo '<input type="hidden" name="cf_metabox_forms[]" value="' . $args['id'] . '">';
@@ -421,8 +439,6 @@ function cf_custom_fields_remove_file_fields( $field, $form ){
 	return $field;
 
 }
-
-
 
 
 
