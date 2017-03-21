@@ -53,12 +53,15 @@ function cf_custom_fields_get_forms(){
  * Includes backwards compat for pre-Caldera Forms 1.3.4
  *
  * @since 2.0.5
+ * @deprecated 2.1.3
+ *
  *
  * @param string $id_name ID or name of form
  *
  * @return array|void
  */
 function cf_custom_fields_get_form( $id_name ){
+	_deprecated_function( __FUNCTION__, '2.1.3', 'Caldera_Forms_Forms::get_form()' );
 
 	$form = Caldera_Forms_Forms::get_form( $id_name );
 

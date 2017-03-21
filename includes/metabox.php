@@ -206,7 +206,7 @@ function cf_custom_fields_form_as_metabox() {
 		return;
 	}
 	foreach($forms as $form){
-		$form = cf_custom_fields_get_form( $form[ 'ID' ] );
+		$form = Caldera_Forms_Forms::get_form( $form[ 'ID' ] );
 		if( ! is_array( $form ) ){
 			continue;
 		}
