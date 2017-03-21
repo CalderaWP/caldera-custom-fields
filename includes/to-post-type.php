@@ -26,7 +26,7 @@ function cf_custom_fields_posttype_process($processors){
 
 	$processors['post_type'] = array(
 		"name"				=>	__( 'Save as Post Type', 'caldera-forms-metabox' ),
-		"author"            =>  'David Cramer',
+		"author"            =>  'Caldera Labs',
 		"description"		=>	__( 'Store form entries as a post with custom fields.', 'caldera-forms-metabox' ),
 		"post_processor"	=>	'cf_custom_fields_capture_entry',
 		"template"			=>	trailingslashit( CCF_PATH ) . "includes/to-post-type-config.php",
@@ -299,8 +299,10 @@ function cf_custom_fields_capture_entry($config, $form){
 			return;
 
 		}
+		$post = get_post( $entry_id );
 
 	}
+
 
 	// do upload + attach
 	if( !empty( $config['featured_image'] ) ){
@@ -311,6 +313,8 @@ function cf_custom_fields_capture_entry($config, $form){
 		}
 
 	}
+
+
 
 	//handle taxonomies
 	$terms_saved = false;
@@ -324,18 +328,45 @@ function cf_custom_fields_capture_entry($config, $form){
 
 	//get post fields into an array of fields not to save as meta.
 	$post_fields = array_keys( $entry );
+	$mapped_post_fields = array();
+	foreach ( $config as $field => $bound ){
+		if( ! empty( $bound ) && in_array( $field, $post_fields ) ){
+			$mapped_post_fields[ $field ] = $bound;
+		}
+
+	}
+
 	// get all submission data
 	$data = Caldera_Forms::get_submission_data( $form );
 	update_post_meta( $entry_id, '_cf_form_id', $form['ID'] );
-	foreach($data as $field=>$value){
+	foreach ( $data as $field_id => $value ) {
+
+		$field = Caldera_Forms_Field_Util::get_field( $field_id, $form );
+		if( empty( $field ) ){
+			continue;
+		}
+		$slug = $field[ 'slug' ];
+		if( in_array( $slug, $mapped_post_fields ) || in_array( $field[ 'ID' ], $mapped_post_fields ) ){
+			continue;
+		}
+
+		if( in_array( '%' . $slug . '%', $mapped_post_fields   ) ){
+			continue;
+		}
+
+		$type = Caldera_Forms_Field_Util::get_type( $field, $form );
+		if( Caldera_Forms_Fields::not_support( $type, 'entry_list')){
+			continue;
+		}
+
 		if ( '_entry_token' != $field && '_entry_id' != $field ) {
-			if ( in_array( $field, $post_fields )  || in_array( $form['fields'][ $field ]['ID'], $post_fields ) ) {
+			if ( in_array( $field, $post_fields )  || in_array( $form['fields'][ $field_id ]['ID'], $post_fields ) ) {
 				continue;
 			}
 
 		}
 
-		if ( $terms_saved ) {
+		if ( $terms_saved && is_array( $term_values ) ) {
 			if ( is_array( $value ) ) {
 				$_value = implode( ', ', $value );
 			} else {
@@ -349,23 +380,16 @@ function cf_custom_fields_capture_entry($config, $form){
 		}
 
 
-
-		if(empty($form['fields'][$field])){
-			continue;
-		}
-		if( in_array( $form['fields'][$field]['type'], array( 'button', 'html' ) ) ){
-			continue;
-		}
-		if( $form['fields'][$field]['type'] == 'file' ){
+		if( Caldera_Forms_Field_Util::is_file_field( $field, $form ) ){
 			if( $field == $config['featured_image'] ){
-				continue; // dont attache twice.
+				continue; // dont attach twice.
 			}
 			foreach( (array) $value as $file ){
 				cf_custom_fields_attach_file( $file , $entry_id );
 			}
 		}
 
-		$slug = $form['fields'][$field]['slug'];
+
 
 		/**
 		 * Filter value before saving using to post type processor

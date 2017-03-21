@@ -61,7 +61,7 @@ function cf_custom_fields_prevent_mailer( $form ){
 function cf_custom_fields_register_metabox_processor($processors){
 	$processors['cf_asmetabox'] = array(
 		"name"				=>	__( 'Custom Fields Post Metabox', 'caldera-forms-metabox' ),
-		"author"            =>  'David Cramer',
+		"author"            =>  'Caldera Labs',
 		"description"		=>	__( 'Use a form as a custom metabox in the post editor.', 'caldera-forms-metabox' ),
 		"single"			=>	true,
 		"processor"			=>	'cf_custom_fields_save_meta_data',
@@ -166,6 +166,11 @@ function cf_custom_fields_save_meta_data($config, $form){
 		}
 
 		$slug = $form['fields'][$key]['slug'];
+		$field = Caldera_Forms_Field_Util::get_field( $form['fields'][$key]['ID'], $form );
+		$type = Caldera_Forms_Field_Util::get_type($field, $form );
+		if( Caldera_Forms_Fields::not_support( $type, 'entry_list')){
+			continue;
+		}
 
 		/**
 		 * Filter value before saving using to metabox processor
