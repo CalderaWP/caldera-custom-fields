@@ -220,10 +220,13 @@ function cf_custom_fields_form_as_metabox() {
 			if(!empty($form['processors'][ $processor['ID'] ]['config']['posttypes'])){
 
 				// add filter to get details of entry
-				add_filter('caldera_forms_get_entry_detail', 'cf_custom_fields_get_post_details', 10, 3);
+				add_filter('caldera_forms_get_entry_detail', 'cf_custom_fields_get_post_details', 10, 3 );
 
 				// add filter to remove submit buttons
-				add_filter('caldera_forms_render_setup_field', 'cf_custom_fields_submit_button_removal');
+				add_filter('caldera_forms_render_setup_field', 'cf_custom_fields_submit_button_removal', 10, 2 );
+
+				// add filter to remove file fields
+				add_filter('caldera_forms_render_setup_field', 'cf_custom_fields_remove_file_fields', 10, 2 );
 
 				foreach( $form['processors'][ $processor['ID'] ]['config']['posttypes'] as $screen=>$enabled){
 					add_meta_box(
@@ -404,12 +407,15 @@ function cf_custom_fields_get_post_details($details, $entry, $form){
  *
  * @since 1.?.?
  *
- * @param $field
+ * @uses "caldera_forms_render_setup_field" filter
+ * @param array $field
+ * @param array $form
  *
- * @return bool
+ * @return bool|array
  */
-function cf_custom_fields_submit_button_removal($field){
-	if($field['type'] === 'button'){
+function cf_custom_fields_submit_button_removal($field, $form ){
+	$type = Caldera_Forms_Field_Util::get_type($field, $form );
+	if( 'button' == $type ){
 		$field['config']['class'] .= ' button';
 		if( $field['config']['type'] === 'submit' ){
 			return false;
@@ -419,7 +425,25 @@ function cf_custom_fields_submit_button_removal($field){
 	
 }
 
+/**
+ * Remove file fields
+ *
+ * @since 2.1.3
+ *
+ * @uses "caldera_forms_render_setup_field" filter
+ * @param array $field
+ * @param array $form
+ *
+ * @return bool|array
+ */
+function cf_custom_fields_remove_file_fields( $field, $form ){
+	if( Caldera_Forms_Field_Util::is_file_field( $field, $form ) ){
+		return false;
+	}
 
+	return $field;
+
+}
 
 
 
