@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: Caldera Custom Fields
- * Plugin URI:  https://CalderaWP.com/downloads/caldera-form-custom-fields
+ * Plugin URI:  https://calderaforms.com/downloads/caldera-form-custom-fields
  * Description: Create custom fields with powerful conditionals and processors using a Caldera Forms as the metabox designer.
  * Version:     2.1.1
- * Author:      David Cramer for CalderaWP LLC
- * Author URI:  https://CalderaWP.com
+ * Author:      Caldera Labs
+ * Author URI:  https://CalderaLabs.org
  * License:     GPL-2.0+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  */
@@ -21,9 +21,32 @@ define( 'CCF_CORE',  __FILE__ );
  */
 add_action( 'init', 'cf_custom_fields_init' );
 function cf_custom_fields_init() {
-	include_once( CCF_PATH . '/includes/metabox.php' );
-	include_once( CCF_PATH . '/includes/to-post-type.php' );
+	if( class_exists( 'Caldera_Forms_Fields' ) ){
+		include_once( CCF_PATH . '/includes/metabox.php' );
+		include_once( CCF_PATH . '/includes/to-post-type.php' );
+	}else{
+		add_action( 'admin_notices', 'cf_custom_fields_need_cf_update_notice' );
+	}
+
 }
+
+/**
+ * Adds an admin notice if plugin has wrong Caldera Forms core version
+ *
+ * @since 1.5.0
+ *
+ * @uses "admin_notices" action
+ */
+function cf_custom_fields_need_cf_update_notice() {
+	?>
+	<div class="notice notice-error">
+		<p>
+			<?php esc_html_e( 'Caldera Forms Custom Fields Requires Caldera Forms 1.5 or later. Please update Caldera Forms or disable this add-on.', 'caldera-form-metabox' ); ?>
+		</p>
+	</div>
+	<?php
+}
+
 
 /**
  * Get Caldera Forms
