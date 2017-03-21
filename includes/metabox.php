@@ -166,11 +166,6 @@ function cf_custom_fields_save_meta_data($config, $form){
 		}
 
 		$slug = $form['fields'][$key]['slug'];
-		$field = Caldera_Forms_Field_Util::get_field( $form['fields'][$key]['ID'], $form );
-		$type = Caldera_Forms_Field_Util::get_type($field, $form );
-		if( Caldera_Forms_Fields::not_support( $type, 'entry_list')){
-			continue;
-		}
 
 		/**
 		 * Filter value before saving using to metabox processor
