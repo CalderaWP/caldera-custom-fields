@@ -517,7 +517,19 @@ function cf_custom_fields_save_terms( $tax_fields, $post_id ){
 				foreach( $terms as $i => $term ){
 					$terms[ $i ] = intval( $terms[ $i ] );
 				}
-			}elseif( is_array( $terms ) ){
+			}elseif ( is_string( $terms ) ){
+				$terms = get_term_by( 'slug', $data[ 'terms' ], $data[ 'taxonomy'] );
+				if( is_a( $terms, 'WP_Term') ){
+					$terms = $terms->term_id;
+				}else{
+					$terms = get_term_by( 'name', $data[ 'terms' ], $data[ 'taxonomy'] );
+					if( is_a( $terms, 'WP_Term') ){
+						$terms = $terms->term_id;
+					}else{
+						continue;
+					}
+				}
+			} elseif( is_array( $terms ) ){
 				//yolo(?)
 			}else {
 				continue;
