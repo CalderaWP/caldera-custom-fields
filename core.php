@@ -32,9 +32,12 @@ function cf_custom_fields_init() {
  *
  * @since 2.0.5
  *
+ * @deprecated 2.1.3
+ *
  * @return array|void
  */
 function cf_custom_fields_get_forms(){
+	_deprecated_function( __FUNCTION__, '2.1.3', 'Caldera_Forms_Forms::get_forms( true )' );
 	if ( class_exists( 'Caldera_Forms_Forms' )  ) {
 		$forms = Caldera_Forms_Forms::get_forms( true );
 	} else {
@@ -56,11 +59,9 @@ function cf_custom_fields_get_forms(){
  * @return array|void
  */
 function cf_custom_fields_get_form( $id_name ){
-	if ( class_exists( 'Caldera_Forms_Forms' )  ) {
-		$form = Caldera_Forms_Forms::get_form( $id_name );
-	} else {
-		$form = Caldera_Forms::get_form( $id_name );
-	}
+
+	$form = Caldera_Forms_Forms::get_form( $id_name );
+
 
 	if( isset( $form[ 'ID' ] ) && ! isset( $form[ 'id' ] ) ){
 		$form[ 'id' ] = $form[ 'ID' ];

@@ -201,7 +201,7 @@ function cf_custom_fields_save_meta_data($config, $form){
  * @since 1.?.?
  */
 function cf_custom_fields_form_as_metabox() {
-	$forms = cf_custom_fields_get_forms();
+	$forms = Caldera_Forms_Forms::get_forms( true );
 	if(empty($forms)){
 		return;
 	}
