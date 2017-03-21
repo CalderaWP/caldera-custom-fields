@@ -254,49 +254,12 @@ function cf_custom_fields_form_as_metabox() {
 				}
 			}
 
-			// has a form - get field type
-			if(!isset($field_types)){
-				$field_types = apply_filters('caldera_forms_get_field_types', array() );
-			}
-
-			if(!empty($form['fields'])){
-				foreach($form['fields'] as $field){
-					//enqueue styles
-					if( !empty( $field_types[$field['type']]['styles'])){
-						foreach($field_types[$field['type']]['styles'] as $style){
-							if(filter_var($style, FILTER_VALIDATE_URL)){
-								wp_enqueue_style( 'cf-' . sanitize_key( basename( $style ) ), $style, array());
-							}else{
-								wp_enqueue_style( $style );
-							}
-						}
-					}
-
-					//enqueue scripts
-					if( !empty( $field_types[$field['type']]['scripts'])){
-						// check for jquery deps
-						$depts[] = 'jquery';
-						foreach($field_types[$field['type']]['scripts'] as $script){
-							if(filter_var($script, FILTER_VALIDATE_URL)){
-								wp_enqueue_script( 'cf-' . sanitize_key( basename( $script ) ), $script, $depts);
-							}else{
-								wp_enqueue_script( $script );
-							}
-						}
-					}
-				}
-			}
-
-            wp_enqueue_script( 'cf-validator' );
-            wp_enqueue_script( 'cf-validator-i18n' );
-
-			// if depts been set- scripts are used -
-			wp_enqueue_script( 'cf-frontend-fields', CFCORE_URL . 'assets/js/fields.min.js', array('jquery'), null, true);
-			wp_enqueue_script( 'cf-frontend-script-init', CFCORE_URL . 'assets/js/frontend-script-init.min.js', array('jquery'), null, true);
+			Caldera_Forms_Admin_Assets::admin_common();
+			Caldera_Forms_Admin_Assets::form_editor();
+			Caldera_Forms_Render_Assets::enqueue_all_fields();
 
 			// metabox & gridcss
 			wp_enqueue_style( 'cf-metabox-grid-styles', CCF_URL . 'css/metagrid.css');
-			wp_enqueue_style( 'cf-metabox-field-styles', CFCORE_URL . 'assets/css/fields.min.css');
 			wp_enqueue_style( 'cf-metabox-styles', CCF_URL . 'css/metabox.css');
 		}
 	}
