@@ -155,10 +155,24 @@ function cf_custom_fields_save_meta_data($config, $form){
 
 	$field_toremove = array();
 
-	foreach($form['fields'] as $field){
-		// remove old data
+	foreach($form['fields'] as $field_id => $field){
+		if( 'button' == Caldera_Forms_Field_Util::get_type($field, $form ) && $field['config']['type'] === 'submit' ){
+			unset( $form[ 'fields' ][ $field_id ] );
+		}elseif ( Caldera_Forms_Field_Util::is_file_field( $field, $form ) ){
+			unset( $form[ 'fields' ][ $field_id ] );
+		}elseif( Caldera_Forms_Fields::not_support( Caldera_Forms_Field_Util::get_type( $field, $form ), 'entry_list')){
+			unset( $form[ 'fields' ][ $field_id ] );
+		}
+
+
 		delete_post_meta( $post->ID, $field['slug'] );
 	}
+
+	// add filter to remove submit buttons
+	add_filter('caldera_forms_render_setup_field', 'cf_custom_fields_submit_button_removal', 10, 2 );
+
+	// add filter to remove file fields
+	add_filter('caldera_forms_render_setup_field', 'cf_custom_fields_remove_file_fields', 10, 2 );
 
 	foreach($data as $key=>$value){
 		if(empty($form['fields'][$key])){
