@@ -22,7 +22,7 @@ add_filter('caldera_forms_get_form_processors', 'cf_custom_fields_register_metab
  * Save will happen at "save_post" action
  */
 add_action( 'wp_loaded', function(){
-	if (isset($_POST['_cf_frm_id']) && $_POST[ 'cf_metabox_forms'] ) {
+	if (isset($_POST['_cf_frm_id'], $_POST[ 'cf_metabox_forms']  ) ) {
 		if ( isset( $_POST[ '_cf_verify' ] ) && Caldera_Forms_Render_Nonce::verify_nonce( $_POST[ '_cf_verify' ], $_POST[ '_cf_frm_id' ] ) ) {
 			remove_action( 'wp_loaded', array( Caldera_Forms::get_instance(), 'cf_init_system' ), 25 );
 
