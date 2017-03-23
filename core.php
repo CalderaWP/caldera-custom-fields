@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Caldera Custom Fields
  * Plugin URI:  https://calderaforms.com/downloads/caldera-form-custom-fields
- * Description: Create custom fields with powerful conditionals and processors using a Caldera Forms as the metabox designer.
- * Version:     2.1.1
+ * Description: Post editing, front-end or as a metabox, powered by Caldera Forms
+ * Version:     2.1.3
  * Author:      Caldera Labs
  * Author URI:  https://CalderaLabs.org
  * License:     GPL-2.0+
@@ -12,7 +12,7 @@
 
 define( 'CCF_PATH',  plugin_dir_path( __FILE__ ) );
 define( 'CCF_URL',  plugin_dir_url( __FILE__ ) );
-define( 'CCF_VER', '2.1.2' );
+define( 'CCF_VER', '2.1.3' );
 define( 'CCF_CORE',  __FILE__ );
 
 
