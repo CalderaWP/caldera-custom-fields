@@ -567,7 +567,7 @@ function cf_custom_fields_save_terms( $tax_fields, $post_id ){
  *
  * @uses "caldera_forms_file_upload_handler" filter
  *
- * @since 1.3.5
+ * @since 2.1.4
  *
  * @param array|string|callable Callable
  * @param array $form Form config
@@ -587,7 +587,7 @@ function cf_custom_fields_filter_upload_handler( $handler, $form, $field ){
 /**
  * Handle featured image uploads
  *
- * @since 1.3.5
+ * @since 2.1.4
  *
  * @param array $upload
  * @param array $file
@@ -604,7 +604,7 @@ function cf_custom_fields_upload_handler( $upload,$file, $upload_args ){
 /**
  * Set featured image fields NOT to add to media library since they already are
  *
- * @since 1.3.5
+ * @since 2.1.4
  *
  * @uses "caldera_forms_render_setup_field" filter
  *
@@ -625,7 +625,7 @@ function cf_custom_fields_filter_featured_image( $field, $form ){
 /**
  * Check if field is the featured image field
  *
- * @since 1.3.5
+ * @since 2.1.4
  *
  * @param array $field Field config
  * @param array $form Form config
@@ -636,7 +636,6 @@ function cf_custom_fields_is_featured_image_field( $field, $form ){
 	$has = Caldera_Forms::get_processor_by_type( 'post_type', $form );
 	if( $has && $field[ 'ID' ] == $has[0]['config'][ 'featured_image'] ){
 		return true;
-
 	}
 
 	return false;
