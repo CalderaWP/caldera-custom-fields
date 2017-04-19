@@ -2,8 +2,8 @@
 Contributors: Desertsnowman, Shelob9
 Tags: Custom metabox, caldera forms, form as metabox, custom metaboxes, custom fields, custom field, form custom field, form to post type, calderawp, front-end editor, front end editor
 Requires at least: 4.2
-Tested up to: 4.6
-Stable tag: 2.1.2
+Tested up to: 4.7.3
+Stable tag: 2.1.4
 License: GPLv2
 
 Caldera Forms to post types and custom fields: front-end or back-end

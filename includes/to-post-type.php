@@ -13,6 +13,13 @@ add_action( 'caldera_forms_processor_templates', 'cf_custom_fields_meta_template
 add_filter( 'caldera_forms_render_pre_get_entry', 'cf_custom_fields_populate_form_edit', 11, 3 );
 add_filter( 'caldera_forms_get_addons', 'cf_custom_fields_savetoposttype_addon' );
 
+// Better upload attach if CF Core is 1.5.0.9
+//see https://github.com/CalderaWP/caldera-custom-fields/issues/17
+if (  method_exists( 'Caldera_Forms_Admin', 'is_page' ) ) {
+	add_filter( 'caldera_forms_render_setup_field', 'cf_custom_fields_filter_featured_image', 25, 2 );
+	add_filter( 'caldera_forms_file_upload_handler', 'cf_custom_fields_filter_upload_handler', 10, 3 );
+}
+
 /**
  * Register this as a processor.
  *
@@ -304,16 +311,26 @@ function cf_custom_fields_capture_entry($config, $form){
 	}
 
 
-	// do upload + attach
-	if( !empty( $config['featured_image'] ) ){
-		$featured_image = Caldera_Forms::get_field_data( $config['featured_image'], $form );
-		foreach( (array) $featured_image as $filename ){
-			$featured_image = cf_custom_fields_attach_file( $filename, $entry_id );
-			update_post_meta($entry_id, '_thumbnail_id', $featured_image );
+	// do upload + attach before 1.5.0.9
+	//see https://github.com/CalderaWP/caldera-custom-fields/issues/17
+	if ( ! method_exists( 'Caldera_Forms_Admin', 'is_page' ) ) {
+		if ( ! empty( $config[ 'featured_image' ] ) ) {
+			$featured_image = Caldera_Forms::get_field_data( $config[ 'featured_image' ], $form );
+			foreach ( (array) $featured_image as $filename ) {
+				$featured_image = cf_custom_fields_attach_file( $filename, $entry_id );
+				update_post_meta( $entry_id, '_thumbnail_id', $featured_image );
+			}
+		}
+	}else{
+		if( !empty( $config['featured_image'] ) ){
+			$featured_image = 	Caldera_Forms_Transient::get_transient( 'cf_cf_featured_' . $form[ 'ID' ] );
+			if (  is_numeric( $featured_image ) ) {
+				set_post_thumbnail( $post, $featured_image );
+			}
+
 		}
 
 	}
-
 
 
 	//handle taxonomies
@@ -544,3 +561,84 @@ function cf_custom_fields_save_terms( $tax_fields, $post_id ){
 
 	return true;
 }
+
+/**
+ * Use custom handler for featured image
+ *
+ * @uses "caldera_forms_file_upload_handler" filter
+ *
+ * @since 1.3.5
+ *
+ * @param array|string|callable Callable
+ * @param array $form Form config
+ * @param array $field Field config
+ *
+ * @return string
+ */
+function cf_custom_fields_filter_upload_handler( $handler, $form, $field ){
+	if( cf_custom_fields_is_featured_image_field( $field, $form ) ){
+		return 'cf_custom_fields_upload_handler';
+	}
+
+	return $handler;
+
+}
+
+/**
+ * Handle featured image uploads
+ *
+ * @since 1.3.5
+ *
+ * @param array $upload
+ * @param array $file
+ * @param array $upload_args
+ */
+function cf_custom_fields_upload_handler( $upload,$file, $upload_args ){
+	$upload = wp_handle_upload($upload, array( 'test_form' => false ) );
+	$attachment_id = Caldera_Forms_Files::add_to_media_library( $upload );
+	if ( is_numeric( $attachment_id ) ) {
+		Caldera_Forms_Transient::set_transient( 'cf_cf_featured_' . $file ['form_id'], $attachment_id );
+	}
+}
+
+/**
+ * Set featured image fields NOT to add to media library since they already are
+ *
+ * @since 1.3.5
+ *
+ * @uses "caldera_forms_render_setup_field" filter
+ *
+ * @param array $field Field config
+ * @param array $form Form config
+ *
+ * @return mixed
+ */
+function cf_custom_fields_filter_featured_image( $field, $form ){
+	if( cf_custom_fields_is_featured_image_field( $field, $form ) ){
+		$field['config']['media_lib'] = false;
+	}
+
+	return $field;
+
+}
+
+/**
+ * Check if field is the featured image field
+ *
+ * @since 1.3.5
+ *
+ * @param array $field Field config
+ * @param array $form Form config
+ *
+ * @return bool
+ */
+function cf_custom_fields_is_featured_image_field( $field, $form ){
+	$has = Caldera_Forms::get_processor_by_type( 'post_type', $form );
+	if( $has && $field[ 'ID' ] == $has[0]['config'][ 'featured_image'] ){
+		return true;
+
+	}
+
+	return false;
+}
+
