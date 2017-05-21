@@ -591,6 +591,8 @@ function cf_custom_fields_filter_upload_handler( $handler, $form, $field ){
  *
  * @param array $upload
  * @param array $file
+ *
+ * @return array
  */
 function cf_custom_fields_upload_handler( $upload, $file ){
 	$upload = wp_handle_upload($upload, array( 'test_form' => false ) );
@@ -598,6 +600,8 @@ function cf_custom_fields_upload_handler( $upload, $file ){
 	if ( is_numeric( $attachment_id ) ) {
 		Caldera_Forms_Transient::set_transient( 'cf_cf_featured_' . $file ['form_id'], $attachment_id );
 	}
+
+	return $upload;
 }
 
 /**
