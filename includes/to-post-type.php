@@ -276,7 +276,7 @@ function cf_custom_fields_capture_entry($config, $form){
 		'post_excerpt'	=> Caldera_Forms::do_magic_tags( $config['post_excerpt'] ),
 		'comment_status'=> $config['comment_status'],
 	);
-	
+
 	if( empty( $entry[ 'post_content' ] ) ){
 		$entry[ 'post_content' ] = '';
 	}
@@ -488,7 +488,7 @@ function cf_custom_fields_taxonomy_ui(){
  * Find taxonomy fields and values
  *
  * @since 2.1.0
- * 
+ *
  * @param $all_fields
  *
  * @return array
@@ -511,9 +511,9 @@ function cf_custom_fields_get_taxonomy_fields( $all_fields ){
 
 /**
  * Save taxonomy terms
- * 
+ *
  * @since 2.1.0
- * 
+ *
  * @param array $tax_fields Taxonomy fields to save
  * @param int $post_id Post ID
  *
@@ -553,7 +553,7 @@ function cf_custom_fields_save_terms( $tax_fields, $post_id ){
 			}
 
 			$updated = wp_set_object_terms( $post_id, $terms, $data[ 'taxonomy'] );
-			
+
 		}
 
 
@@ -591,14 +591,17 @@ function cf_custom_fields_filter_upload_handler( $handler, $form, $field ){
  *
  * @param array $upload
  * @param array $file
- * @param array $upload_args
+ *
+ * @return array
  */
-function cf_custom_fields_upload_handler( $upload,$file, $upload_args ){
+function cf_custom_fields_upload_handler( $upload, $file ){
 	$upload = wp_handle_upload($upload, array( 'test_form' => false ) );
 	$attachment_id = Caldera_Forms_Files::add_to_media_library( $upload );
 	if ( is_numeric( $attachment_id ) ) {
 		Caldera_Forms_Transient::set_transient( 'cf_cf_featured_' . $file ['form_id'], $attachment_id );
 	}
+
+	return $upload;
 }
 
 /**
@@ -640,4 +643,3 @@ function cf_custom_fields_is_featured_image_field( $field, $form ){
 
 	return false;
 }
-
