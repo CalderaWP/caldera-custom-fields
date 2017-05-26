@@ -17,6 +17,7 @@ add_filter( 'caldera_forms_get_addons', 'cf_custom_fields_savetoposttype_addon' 
 //see https://github.com/CalderaWP/caldera-custom-fields/issues/17
 if (  method_exists( 'Caldera_Forms_Admin', 'is_page' ) ) {
 	add_filter( 'caldera_forms_render_setup_field', 'cf_custom_fields_filter_featured_image', 25, 2 );
+	add_filter( 'caldera_forms_render_get_field', 'cf_custom_fields_filter_featured_image', 25, 2 );
 	add_filter( 'caldera_forms_file_upload_handler', 'cf_custom_fields_filter_upload_handler', 10, 3 );
 }
 
