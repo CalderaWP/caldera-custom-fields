@@ -398,7 +398,7 @@ function cf_custom_fields_capture_entry($config, $form){
 
 
 		if( Caldera_Forms_Field_Util::is_file_field( $field, $form ) ){
-			if( $field == $config['featured_image'] ){
+			if( $field['ID'] == $config['featured_image'] ){
 				continue; // dont attach twice.
 			}
 			foreach( (array) $value as $file ){
@@ -589,16 +589,18 @@ function cf_custom_fields_filter_upload_handler( $handler, $form, $field ){
  *
  * @since 2.1.4
  *
- * @param array $upload
  * @param array $file
+ * @param array $args
  *
  * @return array
  */
-function cf_custom_fields_upload_handler( $upload, $file ){
-	$upload = wp_handle_upload($upload, array( 'test_form' => false ) );
+function cf_custom_fields_upload_handler( $file, $args = array() ){
+	$args['private'] = false; //Featured image needs to be public
+	$upload = Caldera_Forms_Files::upload( $file, $args );
+
 	$attachment_id = Caldera_Forms_Files::add_to_media_library( $upload );
 	if ( is_numeric( $attachment_id ) ) {
-		Caldera_Forms_Transient::set_transient( 'cf_cf_featured_' . $file ['form_id'], $attachment_id );
+		Caldera_Forms_Transient::set_transient( 'cf_cf_featured_' . $args['form_id'], $attachment_id );
 	}
 
 	return $upload;
