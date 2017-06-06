@@ -403,7 +403,18 @@ function cf_custom_fields_capture_entry($config, $form){
 				continue; // dont attach twice.
 			}
 			foreach( (array) $value as $file ){
-				cf_custom_fields_attach_file( $file , $entry_id );
+				/**
+				 * Option to prevent this add-ons uplpoad handler from being called on non-featured image fields.
+				 *
+				 * @since  2.1.5
+				 *
+				 * @param bool $use Should be used?
+				 * @param array $field Field config
+				 * @param array $config Processor config
+				 */
+				if( apply_filters( 'cf_custom_fields_use_uploader', true, $field, $form, $config ) ){
+					cf_custom_fields_attach_file( $file , $entry_id );
+				}
 			}
 		}
 
