@@ -12,6 +12,7 @@ add_filter( 'caldera_forms_get_entry_meta_db_storage', 'cf_custom_fields_meta_vi
 add_action( 'caldera_forms_processor_templates', 'cf_custom_fields_meta_template');
 add_filter( 'caldera_forms_render_pre_get_entry', 'cf_custom_fields_populate_form_edit', 11, 3 );
 add_filter( 'caldera_forms_get_addons', 'cf_custom_fields_savetoposttype_addon' );
+add_action( 'caldera_forms_submit_start', 'cf_custom_fields_init_pods' );
 
 // Better upload attach if CF Core is 1.5.0.9
 //see https://github.com/CalderaWP/caldera-custom-fields/issues/17
@@ -36,6 +37,7 @@ function cf_custom_fields_posttype_process($processors){
 		"name"				=>	__( 'Save as Post Type', 'caldera-forms-metabox' ),
 		"author"            =>  'Caldera Labs',
 		"description"		=>	__( 'Store form entries as a post with custom fields.', 'caldera-forms-metabox' ),
+		"pre_processor"     => 'cf_custom_fields_pre',
 		"post_processor"	=>	'cf_custom_fields_capture_entry',
 		"template"			=>	trailingslashit( CCF_PATH ) . "includes/to-post-type-config.php",
 		"icon"				=>	CCF_URL . "/post-type.png",
@@ -282,6 +284,8 @@ function cf_custom_fields_capture_entry($config, $form){
 		$entry[ 'post_content' ] = '';
 	}
 
+
+
 	// set the ID
 	if( !empty( $config['ID'] ) ){
 		$is_post_id = Caldera_Forms::do_magic_tags( $config['ID'] );
@@ -297,6 +301,8 @@ function cf_custom_fields_capture_entry($config, $form){
 		$entry['post_author'] = $user_id;
 	}
 
+	$entry_id = null;
+
 	//is edit?
 	if(!empty($_POST['_cf_frm_edt'])){
 		// need to work on this still. SIGH!
@@ -311,6 +317,13 @@ function cf_custom_fields_capture_entry($config, $form){
 
 	}
 
+	/** @var CF_Custom_Fields_Pods $cf_custom_fields_pods */
+	global  $cf_custom_fields_pods;
+	if( is_object( $cf_custom_fields_pods ) && function_exists( 'pods' ) && pods_api()->pod_exists( $post->post_type ) && is_object( $cf_custom_fields_pods ) ){
+		$cf_custom_fields_pods->set_pods( pods( $post->post_type, $post->ID ) );
+	}else{
+		$cf_custom_fields_pods->remove_hooks();
+	}
 
 	// do upload + attach before 1.5.0.9
 	//see https://github.com/CalderaWP/caldera-custom-fields/issues/17
@@ -428,9 +441,24 @@ function cf_custom_fields_capture_entry($config, $form){
 		 * @param mixed $value The value to be saved
 		 * @param string $slug Slug of field
 		 * @param int $entry ID of post
+		 * @param array $fie;d Field config @since 2.2.0
+		 * @param array $form Form config @since 2.2.0
 		 */
-		$value = apply_filters( 'cf_custom_fields_pre_save_meta_key_to_post_type', $value, $slug, $entry_id );
+		$value = apply_filters( 'cf_custom_fields_pre_save_meta_key_to_post_type', $value, $slug, $entry_id, $field, $form );
 		update_post_meta( $entry_id, $slug, $value );
+
+		/**
+		 * Runs after value is saved using to post type processor
+		 *
+		 * @since 2.2.0
+		 *
+		 * @param mixed $value The value that was saved
+		 * @param string $slug Slug of field
+		 * @param int $entry ID of post
+		 * @param array $fie;d Field config
+		 * @param array $form Form config
+		 */
+		do_action( 'cf_custom_fields_post_save_meta_key_to_post_type',  $value, $slug, $entry_id, $field, $form );
 	}
 
 	return array('Post ID' => $entry_id, 'ID' => $entry_id, 'permalink' => get_permalink( $entry_id ) );
@@ -609,8 +637,20 @@ function cf_custom_fields_filter_upload_handler( $handler, $form, $field ){
 function cf_custom_fields_upload_handler( $file, $args = array() ){
 	$args['private'] = false; //Featured image needs to be public
 	$upload = Caldera_Forms_Files::upload( $file, $args );
+	if( isset( $args[ 'field_id' ] ) ){
+		$form = null;
+		if( isset( $args[ 'form_id' ] ) ){
+			$form = Caldera_Forms_Forms::get_form( $args[ 'form_id' ] );
+		}
 
-	$attachment_id = Caldera_Forms_Files::add_to_media_library( $upload );
+		$field = Caldera_Forms_Field_Util::get_field( $args[ 'field_id' ], $form  );
+
+
+	}else{
+		$field = array();
+	}
+
+	$attachment_id = Caldera_Forms_Files::add_to_media_library( $upload, $field );
 	if ( is_numeric( $attachment_id ) ) {
 		Caldera_Forms_Transient::set_transient( 'cf_cf_featured_' . $args['form_id'], $attachment_id );
 	}
@@ -656,4 +696,22 @@ function cf_custom_fields_is_featured_image_field( $field, $form ){
 	}
 
 	return false;
+}
+
+/**
+ * Initialize Pods file field handling
+ *
+ * @since 2.2.0
+ *
+ * @uses "caldera_forms_submit_start" action
+ */
+function cf_custom_fields_init_pods() {
+	//return if not CF 1.5.1+ or Pods isn't active
+	if( ! class_exists( 'Caldera_Forms_DB_Tables' ) || ! function_exists( 'pods' ) ){
+		return;
+	}
+	global $cf_custom_fields_pods;
+	$cf_custom_fields_pods = new CF_Custom_Fields_Pods();
+	$cf_custom_fields_pods->add_hooks();
+
 }

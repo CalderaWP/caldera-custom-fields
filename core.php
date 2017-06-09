@@ -28,7 +28,13 @@ function cf_custom_fields_init() {
 		add_action( 'admin_notices', 'cf_custom_fields_need_cf_update_notice' );
 	}
 
+
+
 }
+
+add_action( 'caldera_forms_includes_complete', function(){
+	Caldera_Forms_Autoloader::add_root( 'CF_Custom_Fields', CCF_PATH . 'classes' );
+});
 
 /**
  * Adds an admin notice if plugin has wrong Caldera Forms core version
