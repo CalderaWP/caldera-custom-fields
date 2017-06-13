@@ -322,7 +322,9 @@ function cf_custom_fields_capture_entry($config, $form){
 	if( is_object( $cf_custom_fields_pods ) && function_exists( 'pods' ) && pods_api()->pod_exists( $post->post_type ) && is_object( $cf_custom_fields_pods ) ){
 		$cf_custom_fields_pods->set_pods( pods( $post->post_type, $post->ID ) );
 	}else{
-		$cf_custom_fields_pods->remove_hooks();
+		if( is_object( $cf_custom_fields_pods ) ){
+			$cf_custom_fields_pods->remove_hooks();
+		}
 	}
 
 	// do upload + attach before 1.5.0.9
