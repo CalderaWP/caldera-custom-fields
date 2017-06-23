@@ -411,7 +411,7 @@ function cf_custom_fields_capture_entry($config, $form){
 
 			}
 		}
-
+                $value = apply_filters('caldera_forms_save_field', $value, $form['fields'][$field] );
 
 		if( Caldera_Forms_Field_Util::is_file_field( $field, $form ) ){
 			if( $field['ID'] == $config['featured_image'] ){
