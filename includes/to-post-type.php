@@ -574,7 +574,8 @@ function cf_custom_fields_save_terms( $tax_fields, $post_id ){
 			}elseif( is_string( $terms ) && false != strpos( $terms, ',' ) ){
 				$terms = explode( ',', $terms );
 				foreach( $terms as $i => $term ){
-					$terms[ $i ] = intval( $terms[ $i ] );
+					//$terms[ $i ] = intval( $terms[ $i ] );
+					$terms[ $i ] = $term;
 				}
 			}elseif ( is_string( $terms ) ){
 				$terms = get_term_by( 'slug', $data[ 'terms' ], $data[ 'taxonomy'] );
