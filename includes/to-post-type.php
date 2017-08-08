@@ -574,8 +574,23 @@ function cf_custom_fields_save_terms( $tax_fields, $post_id ){
 			}elseif( is_string( $terms ) && false != strpos( $terms, ',' ) ){
 				$terms = explode( ',', $terms );
 				foreach( $terms as $i => $term ){
-					//$terms[ $i ] = intval( $terms[ $i ] );
-					$terms[ $i ] = $term;
+					if( is_numeric($term) ) {
+						$terms[ $i ] = (int)$term;
+					}elseif ( is_string( $term ) ){
+						$term = get_term_by( 'slug', $term, $data[ 'taxonomy'] );			
+						if( is_a( $term, 'WP_Term') ){
+							$terms[ $i ] = $term->slug;	
+						}else{
+							$term = get_term_by( 'name', $data[ 'term' ], $data[ 'taxonomy'] );
+							if( is_a( $term, 'WP_Term') ){
+								$terms[ $i ] = $term->name;
+							}else{
+								continue;
+							}
+						}
+					}else{
+						continue;
+					}				
 				}
 			}elseif ( is_string( $terms ) ){
 				$terms = get_term_by( 'slug', $data[ 'terms' ], $data[ 'taxonomy'] );
