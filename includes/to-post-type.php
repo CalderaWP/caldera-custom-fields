@@ -585,7 +585,7 @@ function cf_custom_fields_save_terms( $tax_fields, $post_id ){
 			}
 			$terms = $data[ 'terms' ];
 			if( is_numeric( $terms ) && false === strpos( $terms, ',' ) ){
-				$terms = (int) $terms;
+				$terms = (string) $terms;
 				
 			}elseif( is_string( $terms ) && false != strpos( $terms, ',' ) ){
 				$terms = explode( ',', $terms );
