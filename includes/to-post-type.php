@@ -446,6 +446,7 @@ function cf_custom_fields_capture_entry($config, $form){
 		 * @param array $fie;d Field config @since 2.2.0
 		 * @param array $form Form config @since 2.2.0
 		 */
+		$value = Caldera_Forms::get_field_data( $value, $form ); 
 		$value = apply_filters( 'cf_custom_fields_pre_save_meta_key_to_post_type', $value, $slug, $entry_id, $field, $form );
 		update_post_meta( $entry_id, $slug, $value );
 		
