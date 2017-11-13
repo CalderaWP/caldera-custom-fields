@@ -85,9 +85,34 @@ function cf_custom_fields_populate_form_edit( $data, $form, $entry_id ){
 				
 				$data[ $processor['config']['post_title'] ] = $post->post_title;
 				$data[ $processor['config']['post_content'] ] = $post->post_content;
+
+				// maps form fields to the taxonomies they should be populated from
+				$tax_map = array();
+				foreach( $processor['config'] as $field => $value ){
+					if( false !== strpos( $field, 'cf-custom-fields-tax-') ){
+						if ( ! empty( $value ) ) {
+							$tax_name = str_replace( 'cf-custom-fields-tax-', '', $field );
+							$tax_field = str_replace( '%', '', $value );
+							$tax_map[ $tax_field ] = $tax_name;
+						}
+					}
+				}
+				
 				foreach( $form['fields'] as $field_id => $field ){
 					if( $post->{$field['slug']} ){
 						$data[ $field_id ] = $post->{$field['slug']};
+					} else {
+						$tax_name = $tax_map [ $field['slug'] ];
+						if( ! empty( $tax_name ) ) {
+							// check whether the field is configured to store IDs or names
+							$fields_type = "names";
+							if($field['config']['value_field'] === 'id')
+								$fields_type = "ids";
+							// TODO: maybe check if $field['config']['taxonomy']; is set to the same taxonomy ?
+							$term_list = wp_get_post_terms($post->ID, $tax_name, array("fields" => $fields_type));
+
+							$data[ $field_id ] = $term_list;
+						}
 					}
 				}
 			}
