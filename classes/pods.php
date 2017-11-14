@@ -67,7 +67,7 @@ class CF_Custom_Fields_Pods {
 	 */
 	public function set_pods( Pods $pods ){
 		$this->pods = $pods;
-	}
+    }
 
     /**
      * Track uploads
@@ -80,7 +80,9 @@ class CF_Custom_Fields_Pods {
      * @param array $field Field ID
      */
     public function file_uploaded( $id, $field ){
+
         $this->files[ $field[ 'ID' ] ] = $id;
+        //Set a transient to retrieve the file attachment ID after a processor as Paypal was used
         Caldera_Forms_Transient::set_transient( 'cf_file_attachment_' . $field[ 'ID' ], $id );
     }
 
@@ -96,19 +98,21 @@ class CF_Custom_Fields_Pods {
      * @param $entry_id
      * @param $field
      */
-    public function save( $value, $slug, $entry_id, $field, $form ){
+    public function save( $value, $slug, $entry_id, $field ){
 
-        if( is_object( $this->pods ) && isset( $this->files[ $field[ 'ID' ] ] ) ) {
 
-            $this->pods->save($slug, $this->files[$field['ID']], $entry_id);
+        if (is_object($this->pods) && isset($this->files[$field['ID']])) {
 
-        } else if( is_object( $this->pods ) && empty( $this->files[ $field[ 'ID' ] ] ) ) {
+            $this->pods->save($slug, array(
+                'image_field' => $this->files[$field['ID']],
+            ), $entry_id);
 
-            $attachment_id = Caldera_Forms_Transient::get_transient( 'cf_file_attachment_' . $field[ 'ID' ] );
-            $this->pods->save( $slug, $attachment_id, $entry_id );
+        } else if ( is_object($this->pods) && $field['type'] === 'file' ) {
+            //Set to be used in cases processors like Paypal were used
+            $attachment_id = Caldera_Forms_Transient::get_transient('cf_file_attachment_' . $field['ID']);
+            $this->pods->save($slug, $attachment_id, $entry_id);
 
         }
-
     }
 
 }
