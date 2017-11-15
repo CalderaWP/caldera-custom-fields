@@ -107,7 +107,7 @@ class CF_Custom_Fields_Pods {
                 'image_field' => $this->files[$field['ID']],
             ), $entry_id);
 
-        } else if ( is_object($this->pods) && $field['type'] === 'file' ) {
+        } else if ( is_object($this->pods) && $field['type'] === 'file' && isset($value) ) {
             //Set to be used in cases processors like Paypal were used
             $attachment_id = Caldera_Forms_Transient::get_transient('cf_file_attachment_' . $field['ID']);
             $this->pods->save($slug, $attachment_id, $entry_id);
