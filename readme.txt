@@ -1,5 +1,5 @@
 === Caldera Custom Fields ===
-Contributors: Desertsnowman, Shelob9
+Contributors: Desertsnowman, Shelob9, nahuelmahe
 Tags: Custom metabox, caldera forms, form as metabox, custom metaboxes, custom fields, custom field, form custom field, form to post type, calderawp, front-end editor, front end editor
 Requires at least: 4.5
 Tested up to: 4.8.3
