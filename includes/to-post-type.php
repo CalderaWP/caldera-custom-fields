@@ -255,7 +255,7 @@ function cf_custom_fields_entry_details($entry, $entry_id, $form){
  * @return array
  */
 function cf_custom_fields_get_post_type_entry($data, $form, $entry_id){
-	
+
 	if($processor = cf_custom_fields_has_pr_processor($form, $entry_id)){
 		$fields = $form['fields'];
 		
@@ -470,12 +470,12 @@ function cf_custom_fields_capture_entry($config, $form){
 		 * @param mixed $value The value to be saved
 		 * @param string $slug Slug of field
 		 * @param int $entry ID of post
-		 * @param array $fie;d Field config @since 2.2.0
+		 * @param array $field Field config @since 2.2.0
 		 * @param array $form Form config @since 2.2.0
 		 */
-		$value = Caldera_Forms::do_magic_tags( $value, $form );
-		$value = apply_filters( 'cf_custom_fields_pre_save_meta_key_to_post_type', $value, $slug, $entry_id, $field, $form );
-		update_post_meta( $entry_id, $slug, $value );
+		 $value = Caldera_Forms::do_magic_tags( $value, $entry );
+		 $value = apply_filters( 'cf_custom_fields_pre_save_meta_key_to_post_type', $value, $slug, $entry_id, $field, $form );
+		 update_post_meta( $entry_id, $slug, $value );
 		
 		/**
 		 * Runs after value is saved using to post type processor
@@ -580,7 +580,14 @@ function cf_custom_fields_get_taxonomy_fields( $all_fields ){
 }
 /**
  * Check if string value is slug or name
- **/
+ *
+ * @since 2.2.1
+ *
+ * @param array $tax_fields Taxonomy fields to save
+ * @param int $post_id Post ID
+ *
+ * @return bool
+ */
 function cf_check_string_kind( $string, $value, $taxonomy ) {
 	if( !empty($string) ) {
 		$string = get_term_by( 'slug', $value, $taxonomy );
