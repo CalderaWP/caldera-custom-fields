@@ -369,15 +369,14 @@ function cf_custom_fields_capture_entry($config, $form){
 		
 	}
 	
-	// get all submission data
-	$data = Caldera_Forms::get_submission_data( $form );
 	update_post_meta( $entry_id, '_cf_form_id', $form['ID'] );
-	foreach ( $data as $field_id => $value ) {
+	
+	//multiple select fields don't get POST-ed when there's no option selected,
+	//so they might not appear in submission_data, so loop the form fields instead
+  
+	foreach ( $form['fields'] as $field_id => $field ) {
+		$value = Caldera_Forms::get_field_data($field_id, $form);
 		
-		$field = Caldera_Forms_Field_Util::get_field( $field_id, $form );
-		if( empty( $field ) ){
-			continue;
-		}
 		$slug = $field[ 'slug' ];
 		if( in_array( $slug, $mapped_post_fields ) || in_array( $field[ 'ID' ], $mapped_post_fields ) ){
 			continue;
