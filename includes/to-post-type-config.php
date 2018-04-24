@@ -48,7 +48,7 @@
 		<?php esc_html_e( 'Post Content', 'caldera-forms-metabox' ); ?>
 	</label>
 	<div class="caldera-config-field">
-		{{{_field slug="post_content" type="paragraph,visual_editor,text,wysiwyg,hidden"}}}
+		{{{_field slug="post_content" type="paragraph,visual_editor,text,wysiwyg,hidden,html"}}}
 	</div>
 </div>
 
