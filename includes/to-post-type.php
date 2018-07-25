@@ -342,6 +342,7 @@ function cf_custom_fields_capture_entry($config, $form){
 			$featured_image = 	Caldera_Forms_Transient::get_transient( 'cf_cf_featured_' . $form[ 'ID' ] );
 			if (  0 < absint( $featured_image ) ) {
 				set_post_thumbnail( $post, $featured_image );
+                Caldera_Forms_Transient::delete_transient( 'cf_cf_featured_' . $form[ 'ID' ] );
 			}
 			
 		}
