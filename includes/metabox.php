@@ -3,7 +3,7 @@
  * Functions/hooks for metabox
  *
  * @package   caldera_custom_fields
- * @copyright 2014-2015 CalderaWP LLC and David Cramer
+ * @copyright 2014-2017 CalderaWP LLC and David Cramer
  */
 
 // add actions
@@ -12,6 +12,26 @@ add_action( 'save_post', 'cf_custom_fields_save_post' );
 
 // add filters
 add_filter('caldera_forms_get_form_processors', 'cf_custom_fields_register_metabox_processor');
+
+
+/**
+ * Before regular submit kicks in, check if is metabox save, verify nonce then remove regular path to process.
+ *
+ * @since 2.1.3
+ *
+ * Save will happen at "save_post" action
+ */
+add_action( 'wp_loaded', function(){
+	if (isset($_POST['_cf_frm_id'], $_POST[ 'cf_metabox_forms']  ) ) {
+		if ( isset( $_POST[ '_cf_verify' ] ) && Caldera_Forms_Render_Nonce::verify_nonce( $_POST[ '_cf_verify' ], $_POST[ '_cf_frm_id' ] ) ) {
+			remove_action( 'wp_loaded', array( Caldera_Forms::get_instance(), 'cf_init_system' ), 25 );
+
+		}
+
+	}
+}, 19 );
+
+
 
 // admin filters & actions
 if( is_admin() ){
@@ -61,7 +81,7 @@ function cf_custom_fields_prevent_mailer( $form ){
 function cf_custom_fields_register_metabox_processor($processors){
 	$processors['cf_asmetabox'] = array(
 		"name"				=>	__( 'Custom Fields Post Metabox', 'caldera-forms-metabox' ),
-		"author"            =>  'David Cramer',
+		"author"            =>  'Caldera Labs',
 		"description"		=>	__( 'Use a form as a custom metabox in the post editor.', 'caldera-forms-metabox' ),
 		"single"			=>	true,
 		"processor"			=>	'cf_custom_fields_save_meta_data',
@@ -155,10 +175,24 @@ function cf_custom_fields_save_meta_data($config, $form){
 
 	$field_toremove = array();
 
-	foreach($form['fields'] as $field){
-		// remove old data
+	foreach($form['fields'] as $field_id => $field){
+		if( 'button' == Caldera_Forms_Field_Util::get_type($field, $form ) && $field['config']['type'] === 'submit' ){
+			unset( $form[ 'fields' ][ $field_id ] );
+		}elseif ( Caldera_Forms_Field_Util::is_file_field( $field, $form ) ){
+			unset( $form[ 'fields' ][ $field_id ] );
+		}elseif( Caldera_Forms_Fields::not_support( Caldera_Forms_Field_Util::get_type( $field, $form ), 'entry_list')){
+			unset( $form[ 'fields' ][ $field_id ] );
+		}
+
+
 		delete_post_meta( $post->ID, $field['slug'] );
 	}
+
+	// add filter to remove submit buttons
+	add_filter('caldera_forms_render_setup_field', 'cf_custom_fields_submit_button_removal', 10, 2 );
+
+	// add filter to remove file fields
+	add_filter('caldera_forms_render_setup_field', 'cf_custom_fields_remove_file_fields', 10, 2 );
 
 	foreach($data as $key=>$value){
 		if(empty($form['fields'][$key])){
@@ -201,12 +235,12 @@ function cf_custom_fields_save_meta_data($config, $form){
  * @since 1.?.?
  */
 function cf_custom_fields_form_as_metabox() {
-	$forms = cf_custom_fields_get_forms();
+	$forms = Caldera_Forms_Forms::get_forms( true );
 	if(empty($forms)){
 		return;
 	}
 	foreach($forms as $form){
-		$form = cf_custom_fields_get_form( $form[ 'ID' ] );
+		$form = Caldera_Forms_Forms::get_form( $form[ 'ID' ] );
 		if( ! is_array( $form ) ){
 			continue;
 		}
@@ -220,10 +254,13 @@ function cf_custom_fields_form_as_metabox() {
 			if(!empty($form['processors'][ $processor['ID'] ]['config']['posttypes'])){
 
 				// add filter to get details of entry
-				add_filter('caldera_forms_get_entry_detail', 'cf_custom_fields_get_post_details', 10, 3);
+				add_filter('caldera_forms_get_entry_detail', 'cf_custom_fields_get_post_details', 10, 3 );
 
 				// add filter to remove submit buttons
-				add_filter('caldera_forms_render_setup_field', 'cf_custom_fields_submit_button_removal');
+				add_filter('caldera_forms_render_setup_field', 'cf_custom_fields_submit_button_removal', 10, 2 );
+
+				// add filter to remove file fields
+				add_filter('caldera_forms_render_setup_field', 'cf_custom_fields_remove_file_fields', 10, 2 );
 
 				foreach( $form['processors'][ $processor['ID'] ]['config']['posttypes'] as $screen=>$enabled){
 					add_meta_box(
@@ -237,49 +274,12 @@ function cf_custom_fields_form_as_metabox() {
 				}
 			}
 
-			// has a form - get field type
-			if(!isset($field_types)){
-				$field_types = apply_filters('caldera_forms_get_field_types', array() );
-			}
-
-			if(!empty($form['fields'])){
-				foreach($form['fields'] as $field){
-					//enqueue styles
-					if( !empty( $field_types[$field['type']]['styles'])){
-						foreach($field_types[$field['type']]['styles'] as $style){
-							if(filter_var($style, FILTER_VALIDATE_URL)){
-								wp_enqueue_style( 'cf-' . sanitize_key( basename( $style ) ), $style, array());
-							}else{
-								wp_enqueue_style( $style );
-							}
-						}
-					}
-
-					//enqueue scripts
-					if( !empty( $field_types[$field['type']]['scripts'])){
-						// check for jquery deps
-						$depts[] = 'jquery';
-						foreach($field_types[$field['type']]['scripts'] as $script){
-							if(filter_var($script, FILTER_VALIDATE_URL)){
-								wp_enqueue_script( 'cf-' . sanitize_key( basename( $script ) ), $script, $depts);
-							}else{
-								wp_enqueue_script( $script );
-							}
-						}
-					}
-				}
-			}
-
-            wp_enqueue_script( 'cf-validator' );
-            wp_enqueue_script( 'cf-validator-i18n' );
-
-			// if depts been set- scripts are used -
-			wp_enqueue_script( 'cf-frontend-fields', CFCORE_URL . 'assets/js/fields.min.js', array('jquery'), null, true);
-			wp_enqueue_script( 'cf-frontend-script-init', CFCORE_URL . 'assets/js/frontend-script-init.min.js', array('jquery'), null, true);
+			Caldera_Forms_Admin_Assets::admin_common();
+			Caldera_Forms_Admin_Assets::form_editor();
+			Caldera_Forms_Render_Assets::enqueue_all_fields();
 
 			// metabox & gridcss
 			wp_enqueue_style( 'cf-metabox-grid-styles', CCF_URL . 'css/metagrid.css');
-			wp_enqueue_style( 'cf-metabox-field-styles', CFCORE_URL . 'assets/css/fields.min.css');
 			wp_enqueue_style( 'cf-metabox-styles', CCF_URL . 'css/metabox.css');
 		}
 	}
@@ -364,9 +364,7 @@ function cf_custom_fields_render($post, $args){
 		return 'div';
 	} );
 	ob_start();
-	echo Caldera_Forms::render_form( $args['id'] );
-	
-	$form = str_replace('_cf_verify', 'metabox_cf_verify', ob_get_clean());
+	$form =  Caldera_Forms::render_form( $args['id'] );
 
 	// register this form for processing'
 	echo '<input type="hidden" name="cf_metabox_forms[]" value="' . $args['id'] . '">';
@@ -404,12 +402,15 @@ function cf_custom_fields_get_post_details($details, $entry, $form){
  *
  * @since 1.?.?
  *
- * @param $field
+ * @uses "caldera_forms_render_setup_field" filter
+ * @param array $field
+ * @param array $form
  *
- * @return bool
+ * @return bool|array
  */
-function cf_custom_fields_submit_button_removal($field){
-	if($field['type'] === 'button'){
+function cf_custom_fields_submit_button_removal($field, $form ){
+	$type = Caldera_Forms_Field_Util::get_type($field, $form );
+	if( 'button' == $type ){
 		$field['config']['class'] .= ' button';
 		if( $field['config']['type'] === 'submit' ){
 			return false;
@@ -419,9 +420,25 @@ function cf_custom_fields_submit_button_removal($field){
 	
 }
 
+/**
+ * Remove file fields
+ *
+ * @since 2.1.3
+ *
+ * @uses "caldera_forms_render_setup_field" filter
+ * @param array $field
+ * @param array $form
+ *
+ * @return bool|array
+ */
+function cf_custom_fields_remove_file_fields( $field, $form ){
+	if( Caldera_Forms_Field_Util::is_file_field( $field, $form ) ){
+		return false;
+	}
 
+	return $field;
 
-
+}
 
 
 
