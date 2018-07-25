@@ -292,8 +292,8 @@ function cf_custom_fields_capture_entry($config, $form){
 		$post = get_post( $is_post_id );
 		if( !empty( $post ) && $post->post_type == $entry['post_type'] ){
 			$entry['ID'] = $is_post_id;
+			$entry['post_date'] = date(get_the_date('Y-m-d H:i:s', $is_post_id));            
 		}
-		
 	}
 	
 	// set author
