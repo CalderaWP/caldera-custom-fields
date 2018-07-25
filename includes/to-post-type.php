@@ -340,13 +340,16 @@ function cf_custom_fields_capture_entry($config, $form){
 	}else{
 		if( !empty( $config['featured_image'] ) ){
 			$featured_image = 	Caldera_Forms_Transient::get_transient( 'cf_cf_featured_' . $form[ 'ID' ] );
-			if (  is_numeric( $featured_image ) ) {
+			if (  0 < absint( $featured_image ) ) {
 				set_post_thumbnail( $post, $featured_image );
 			}
 			
 		}
 		
 	}
+	//remove featured image ID from cache
+	//@see https://github.com/CalderaWP/caldera-custom-fields/issues/45#issuecomment-407811190
+    Caldera_Forms_Transient::delete_transient( 'cf_cf_featured_' . $form[ 'ID' ] );
 	
 	
 	//handle taxonomies
